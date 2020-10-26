@@ -8,6 +8,7 @@ namespace WHApp_API.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options){ }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Renter> Renters { get; set; }
+        // public DbSet<User> Users { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<RenterWarehouse> RenterWarehouses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WHApp_API.Data;
+using WHApp_API.Interfaces;
 
 namespace WHApp_API
 {
@@ -28,11 +29,12 @@ namespace WHApp_API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddControllers().AddNewtonsoftJson();
-            services.AddControllers().AddNewtonsoftJson(opt => {
-                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            });
+            services.AddControllers().AddNewtonsoftJson();
+            // services.AddControllers().AddNewtonsoftJson(opt => {
+            //     opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            // });
             services.AddCors();
+            services.AddScoped<IAuthRepository, AuthRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,9 +47,12 @@ namespace WHApp_API
 
             app.UseHttpsRedirection();
 
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
