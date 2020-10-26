@@ -8,7 +8,8 @@ namespace WHApp_API.Models
         public string Location { get; set; }
         public int Capacity { get; set; }
         public int UserId { get; set; }
-        public Owner Owner { get; set; }
+        // public Owner Owner { get; set; }
+        public User User { get; set; }
         public ICollection<RenterWarehouse> RenterWarehouses { get; set; }
     }
 }

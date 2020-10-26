@@ -19,54 +19,6 @@ namespace WHApp_API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("WHApp_API.Models.Owner", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Owners");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.Renter", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Renters");
-                });
-
             modelBuilder.Entity("WHApp_API.Models.RenterWarehouse", b =>
                 {
                     b.Property<int>("RenterWarehouseId")
@@ -87,6 +39,33 @@ namespace WHApp_API.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("RenterWarehouses");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("UserType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Warehouse", b =>
@@ -114,7 +93,7 @@ namespace WHApp_API.Migrations
 
             modelBuilder.Entity("WHApp_API.Models.RenterWarehouse", b =>
                 {
-                    b.HasOne("WHApp_API.Models.Renter", "Renter")
+                    b.HasOne("WHApp_API.Models.User", "User")
                         .WithMany("RenterWarehouses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -129,10 +108,10 @@ namespace WHApp_API.Migrations
 
             modelBuilder.Entity("WHApp_API.Models.Warehouse", b =>
                 {
-                    b.HasOne("WHApp_API.Models.Owner", "Owner")
-                        .WithMany("OwnerWarehouses")
+                    b.HasOne("WHApp_API.Models.User", "User")
+                        .WithMany("UserWarehouses")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

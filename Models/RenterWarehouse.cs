@@ -4,7 +4,8 @@ namespace WHApp_API.Models
     {
         public int RenterWarehouseId { get; set; }
         public int UserId { get; set; }
-        public Renter Renter { get; set; }
+        // public Renter Renter { get; set; }
+        public User User { get; set; }
         public int WarehouseId { get; set; }
         public Warehouse Warehouse { get; set; }
     }
