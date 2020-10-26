@@ -7,5 +7,6 @@ namespace WHApp_API.Interfaces
     {
         Task<User> Register(string username, string userType, string password);
         Task<bool> UserExists(string username);
+        // Task<User> Login(string username, string password);
     }
 }

@@ -8,6 +8,7 @@ namespace WHApp_API.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public User(){}
+        
         public User(string username)
         {
             this.Username = username;
