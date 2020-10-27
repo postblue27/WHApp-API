@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using WHApp_API.Dtos;
 using WHApp_API.Interfaces;
 using WHApp_API.Models;
 
@@ -23,54 +24,54 @@ namespace WHApp_API.Controllers
             _config = config;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromHeader]string username, 
-            [FromHeader]string userType, [FromHeader]string password)
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegister)
         {
-            username = username.ToLower();
+            userForRegister.Username = userForRegister.Username.ToLower();
 
-            if (await _repo.UserExists(username, userType))
+            if (await _repo.UserExists(userForRegister.Username,userForRegister.UserType))
                 return BadRequest("User already exists.");
 
-            var createdUser = await _repo.Register(username, userType, password);
+            var createdUser = await _repo.Register(userForRegister.Username, 
+                userForRegister.UserType, userForRegister.Password);
             return Ok(createdUser);
         }
-        // [HttpPost("login")]
-        // public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
-        // {
-        //     //throw new Exception("my error message");
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
+        {
+            //throw new Exception("my error message");
 
-        //     userForLoginDto.Username = userForLoginDto.Username.ToLower();
+            userForLoginDto.Username = userForLoginDto.Username.ToLower();
 
-        //     var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.Password);
+            var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.UserType, userForLoginDto.Password);
 
-        //     if (userFromRepo == null)
-        //         return Unauthorized();
+            if (userFromRepo == null)
+                return Unauthorized();
 
-        //     var claims = new[]
-        //     {
-        //         new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-        //         new Claim(ClaimTypes.Name, userFromRepo.UserName)
-        //     };
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userFromRepo.UserId.ToString()),
+                new Claim(ClaimTypes.Name, userFromRepo.Username)
+            };
 
-        //     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
 
-        //     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-        //     var tokenDescriptor = new SecurityTokenDescriptor
-        //     {
-        //         Subject = new ClaimsIdentity(claims),
-        //         Expires = DateTime.Now.AddDays(1),
-        //         SigningCredentials = creds
-        //     };
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
 
-        //     var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-        //     var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        //     return Ok(new
-        //     {
-        //         token = tokenHandler.WriteToken(token)
-        //     });
-        // }
+            return Ok(new
+            {
+                token = tokenHandler.WriteToken(token)
+            });
+        }
     }
 }

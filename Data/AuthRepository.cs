@@ -64,32 +64,41 @@ namespace WHApp_API.Data
             }
             return false;
         }
-        // public async Task<User> Login(string username, string password)
-        // {
-        //     var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+        public async Task<User> Login(string username, string userType, string password)
+        {
+            var user = new User();
+            switch(userType)
+            {
+                case "Renter":
+                    user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
+                        break;
+                case "Owner":
+                    user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
+                        break;
+            }
 
-        //     if(user == null)
-        //         return null;
+            if(user == null)
+                return null;
 
-        //     if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-        //         return null;
+            if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                return null;
 
-        //     return user;
-        // }
+            return user;
+        }
 
-        // public bool VerifyPasswordHash(string password, byte[] PasswordHash, byte[] PasswordSalt)
-        // {
-        //     using(var hmac = new System.Security.Cryptography.HMACSHA512(PasswordSalt))
-        //     {
-        //         var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        //         for(int i = 0; i < computedHash.Length; i++)
-        //         {
-        //             if(computedHash[i] != PasswordHash[i])
-        //                 return false;
-        //         }
+        public bool VerifyPasswordHash(string password, byte[] PasswordHash, byte[] PasswordSalt)
+        {
+            using(var hmac = new System.Security.Cryptography.HMACSHA512(PasswordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for(int i = 0; i < computedHash.Length; i++)
+                {
+                    if(computedHash[i] != PasswordHash[i])
+                        return false;
+                }
 
-        //         return true;
-        //     }
-        // }
+                return true;
+            }
+        }
     }
 }
