@@ -28,7 +28,7 @@ namespace WHApp_API.Controllers
         {
             username = username.ToLower();
 
-            if (await _repo.UserExists(username))
+            if (await _repo.UserExists(username, userType))
                 return BadRequest("User already exists.");
 
             var createdUser = await _repo.Register(username, userType, password);

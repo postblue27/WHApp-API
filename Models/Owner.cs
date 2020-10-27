@@ -4,7 +4,7 @@ namespace WHApp_API.Models
 {
     public class Owner : User
     {
-        public ICollection<Warehouse> OwnerWarehouses { get; set; }
+        public ICollection<Warehouse> Warehouses { get; set; }
         public Owner()
         {
             

@@ -14,7 +14,7 @@ namespace WHApp_API.Data
 
         public async Task<User> Register(string username, string userType, string password)
         {
-            User user = new User(username, userType);
+            User user = new User(username);
             byte[] passwordHash, passwordSalt;
 
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -22,26 +22,23 @@ namespace WHApp_API.Data
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            // switch(userType)
-            // {
-            //     case "Renter":
-            //         Renter renter = new Renter(user);
-            //         await _context.Users.AddAsync(renter);
-            //         await _context.SaveChangesAsync();
-            //         return renter;
-            //     case "Owner":
-            //         Owner owner = new Owner(user);  
-            //         // Owner owner = new User(username);
-            //         User u = new Owner(user);
-            //         await _context.Owners.AddAsync(owner);
-            //         await _context.SaveChangesAsync();    
-            //         return owner;
-            //     default:
-            //         return user;
-            // }
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return user;
+            switch(userType)
+            {
+                case "Renter":
+                    Renter renter = new Renter(user);
+                    await _context.Renters.AddAsync(renter);
+                    await _context.SaveChangesAsync();
+                    return renter;
+                case "Owner":
+                    Owner owner = new Owner(user);  
+                    // Owner owner = new User(username);
+                    User u = new Owner(user);
+                    await _context.Owners.AddAsync(owner);
+                    await _context.SaveChangesAsync();    
+                    return owner;
+                default:
+                    return user;
+            }
         }
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -52,16 +49,18 @@ namespace WHApp_API.Data
             }
         }
 
-        public async Task<bool> UserExists(string username)
+        public async Task<bool> UserExists(string username, string userType)
         {
-            // if(await _context.Renters.AnyAsync(u => u.Username == username)
-            //     || await _context.Owners.AnyAsync(u => u.Username == username))
-            // {
-            //     return true;
-            // }
-            if(await _context.Users.AnyAsync(u => u.Username == username))
+            switch(userType)
             {
-                return true;
+                case "Renter":
+                    if(await _context.Renters.AnyAsync(u => u.Username == username))
+                        return true;
+                        break;
+                case "Owner":
+                    if(await _context.Owners.AnyAsync(u => u.Username == username))
+                        return true;
+                        break;
             }
             return false;
         }
