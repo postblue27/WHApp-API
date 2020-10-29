@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WHApp_API.Migrations
 {
-    public partial class ChangedDb : Migration
+    public partial class ChengedDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,12 @@ namespace WHApp_API.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "OwnerId",
+                table: "Warehouses",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "WarehouseCode",
                 table: "Warehouses",
                 nullable: false,
                 defaultValue: 0);
@@ -50,14 +56,15 @@ namespace WHApp_API.Migrations
                     ProductName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     ProductCode = table.Column<string>(nullable: true),
-                    RenterId = table.Column<int>(nullable: false)
+                    Volume = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
                     table.ForeignKey(
-                        name: "FK_Products_Renters_RenterId",
-                        column: x => x.RenterId,
+                        name: "FK_Products_Renters_UserId",
+                        column: x => x.UserId,
                         principalTable: "Renters",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -90,6 +97,7 @@ namespace WHApp_API.Migrations
                 {
                     CarId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CarCode = table.Column<int>(nullable: false),
                     Capacity = table.Column<string>(nullable: true),
                     DriverId = table.Column<int>(nullable: false)
                 },
@@ -199,9 +207,9 @@ namespace WHApp_API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_RenterId",
+                name: "IX_Products_UserId",
                 table: "Products",
-                column: "RenterId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductsForShipping_CarId",
@@ -277,6 +285,10 @@ namespace WHApp_API.Migrations
 
             migrationBuilder.DropColumn(
                 name: "OwnerId",
+                table: "Warehouses");
+
+            migrationBuilder.DropColumn(
+                name: "WarehouseCode",
                 table: "Warehouses");
 
             migrationBuilder.AddColumn<int>(

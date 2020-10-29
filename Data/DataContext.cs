@@ -52,7 +52,7 @@ namespace WHApp_API.Data
             modelBuilder.Entity<Renter>()
                 .HasMany(r => r.Products)
                 .WithOne(p => p.Renter)
-                .HasForeignKey(p => p.RenterId)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             //car and product relations

@@ -43,6 +43,7 @@ namespace WHApp_API
             services.AddScoped<IAppRepository, AppRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<IShippingRepository, ShippingRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters

@@ -47,7 +47,12 @@ namespace WHApp_API.Controllers
         [HttpPost("add-warehouse")]
         public async Task<IActionResult> AddWarehouse(WarehouseForCreateDto warehouseDto)
         {
+            if(!await _apprepo.UserExistsById(warehouseDto.OwnerId, UserTypes.Owner))
+                return BadRequest("User does not exist");
             var warehouse = _mapper.Map<Warehouse>(warehouseDto);
+
+            if(await _warehouserepo.WarehouseExists(warehouse.WarehouseCode))
+                return BadRequest("Warehouse with this WarehouseCode already exists");
 
             _apprepo.Add(warehouse);
 
@@ -60,8 +65,6 @@ namespace WHApp_API.Controllers
         [HttpPost("rent-warehouse")]
         public async Task<IActionResult> RentWarehouse(RenterWarehouse renterWarehouse)
         {
-            var ifExists = await _apprepo.UserExistsById(renterWarehouse.UserId, "Renter");
-            // return Ok(ifExists);
             if(!await _apprepo.UserExistsById(renterWarehouse.UserId, UserTypes.Renter))
                 return BadRequest("User does not exist");
             _apprepo.Add(renterWarehouse);

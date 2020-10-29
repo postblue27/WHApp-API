@@ -6,7 +6,8 @@ using WHApp_API.Models;
 namespace WHApp_API.Data
 {
     public class AuthRepository : IAuthRepository
-    {private readonly DataContext _context;
+    {
+        private readonly DataContext _context;
         public AuthRepository(DataContext context)
         {
             _context = context;
@@ -31,8 +32,6 @@ namespace WHApp_API.Data
                     return renter;
                 case "Owner":
                     Owner owner = new Owner(user);  
-                    // Owner owner = new User(username);
-                    User u = new Owner(user);
                     await _context.Owners.AddAsync(owner);
                     await _context.SaveChangesAsync();    
                     return owner;
@@ -111,6 +110,28 @@ namespace WHApp_API.Data
 
                 return true;
             }
+        }
+
+        public async Task<User> GetUser(string username, string userType)
+        {
+            var user = new User();
+            switch(userType)
+            {
+                case "Renter":
+                    user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
+                        break;
+                case "Owner":
+                    user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
+                        break;
+                case "Driver":
+                    user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
+                        break;
+            }
+
+            if(user == null)
+                return null;
+
+            return user;
         }
     }
 }

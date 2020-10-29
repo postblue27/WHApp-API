@@ -29,6 +29,9 @@ namespace WHApp_API.Migrations
                     b.Property<string>("Capacity")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CarCode")
+                        .HasColumnType("int");
+
                     b.Property<int>("DriverId")
                         .HasColumnType("int");
 
@@ -103,12 +106,15 @@ namespace WHApp_API.Migrations
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RenterId")
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Volume")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("RenterId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Products");
                 });
@@ -250,6 +256,9 @@ namespace WHApp_API.Migrations
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
+                    b.Property<int>("WarehouseCode")
+                        .HasColumnType("int");
+
                     b.HasKey("WarehouseId");
 
                     b.HasIndex("OwnerId");
@@ -293,7 +302,7 @@ namespace WHApp_API.Migrations
                 {
                     b.HasOne("WHApp_API.Models.Renter", "Renter")
                         .WithMany("Products")
-                        .HasForeignKey("RenterId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

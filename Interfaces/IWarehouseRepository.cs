@@ -10,5 +10,7 @@ namespace WHApp_API.Interfaces
         Task<RenterWarehouse> GetRenterWarehouse(int RenterId, int WarehouseId);
         Task<Warehouse> GetWarehouse(int WarehouseId);
         Task<Warehouse> GetWarehouseWithZones(int WarehouseId);
+        Task<bool> ZoneExists(int warehouseId, int zoneId);
+        Task<bool> WarehouseExists(int warehouseCode);
     }
 }

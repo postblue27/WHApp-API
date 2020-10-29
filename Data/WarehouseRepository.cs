@@ -41,8 +41,24 @@ namespace WHApp_API.Data
         {
             var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.WarehouseId == warehouseId);
                 
-
             return warehouse;
+        }
+
+        public async Task<bool> WarehouseExists(int warehouseCode)
+        {
+            if(await _context.Warehouses.AnyAsync(w => w.WarehouseCode == warehouseCode))
+                return true;
+            return false;
+        }
+        public async Task<bool> ZoneExists(int warehouseId, int zoneId)
+        {
+            var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.WarehouseId == warehouseId);
+            foreach(Zone z in warehouse.Zones)
+            {
+                if(z.ZoneId == zoneId)
+                    return true;
+            }
+            return false;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace WHApp_API.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<WarehouseForCreateDto, Warehouse>();    
+            CreateMap<ProductToAddDto, Product>();
         }
     }
 }
