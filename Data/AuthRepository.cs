@@ -36,6 +36,11 @@ namespace WHApp_API.Data
                     await _context.Owners.AddAsync(owner);
                     await _context.SaveChangesAsync();    
                     return owner;
+                case "Driver":
+                    Driver driver = new Driver(user);
+                    await _context.Drivers.AddAsync(driver);
+                    await _context.SaveChangesAsync();
+                    return driver;
                 default:
                     return user;
             }
@@ -61,6 +66,10 @@ namespace WHApp_API.Data
                     if(await _context.Owners.AnyAsync(u => u.Username == username))
                         return true;
                         break;
+                case "Driver":
+                    if(await _context.Drivers.AnyAsync(u => u.Username == username))
+                        return true;
+                        break;
             }
             return false;
         }
@@ -74,6 +83,9 @@ namespace WHApp_API.Data
                         break;
                 case "Owner":
                     user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
+                        break;
+                case "Driver":
+                    user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
                         break;
             }
 

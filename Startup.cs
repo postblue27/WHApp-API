@@ -41,6 +41,8 @@ namespace WHApp_API
             services.AddCors();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IAppRepository, AppRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters

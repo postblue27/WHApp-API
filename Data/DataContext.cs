@@ -14,7 +14,7 @@ namespace WHApp_API.Data
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductForShipping> ProductsForShipping { get; set; }
+        public DbSet<ProductShipping> ProductsForShipping { get; set; }
         public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,8 @@ namespace WHApp_API.Data
             modelBuilder.Entity<Renter>()
                 .HasMany(r => r.RenterWarehouses)
                 .WithOne(rw => rw.Renter)
-                .HasForeignKey(rw => rw.RenterId)
+                // .HasForeignKey(rw => rw.RenterId)
+                .HasForeignKey(rw => rw.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Warehouse>()
                 .HasMany(w => w.RenterWarehouses)
@@ -47,6 +48,13 @@ namespace WHApp_API.Data
                 .HasForeignKey(c => c.DriverId)
                 .OnDelete(DeleteBehavior.Cascade);
             
+            //user and product relations
+            modelBuilder.Entity<Renter>()
+                .HasMany(r => r.Products)
+                .WithOne(p => p.Renter)
+                .HasForeignKey(p => p.RenterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             //car and product relations
             modelBuilder.Entity<Car>()
                 .HasMany(c => c.ProductsForShipping)
@@ -54,9 +62,9 @@ namespace WHApp_API.Data
                 .HasForeignKey(pfs => pfs.CarId)
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Product>()
-                .HasOne(p => p.ProductForShipping)
+                .HasOne(p => p.ProductShipping)
                 .WithOne(pfs => pfs.Product)
-                .HasForeignKey<ProductForShipping>(pfs => pfs.ProductId)
+                .HasForeignKey<ProductShipping>(pfs => pfs.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
             
             //warehouse and product relations
@@ -84,6 +92,13 @@ namespace WHApp_API.Data
                 .WithOne(piw => piw.Zone)
                 .HasForeignKey(piw => piw.ZoneId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            //product for shipping relations
+            modelBuilder.Entity<ProductInWarehouse>()
+                .HasOne(p => p.ProductForShipping)
+                .WithOne(pfs => pfs.ProductInWarehouse)
+                .HasForeignKey<ProductForShipping>(pfs => pfs.ProductInWarehouseId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

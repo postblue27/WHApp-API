@@ -9,5 +9,6 @@ namespace WHApp_API.Models
         public Product Product { get; set; }
         public int ZoneId { get; set; }
         public Zone Zone { get; set; }
+        public ProductForShipping ProductForShipping { get; set; }
     }
 }

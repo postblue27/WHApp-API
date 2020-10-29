@@ -4,7 +4,8 @@ namespace WHApp_API.Models
 {
     public class Renter : User
     {
-        public ICollection<RenterWarehouse> RenterWarehouses { get; set; }        
+        public ICollection<RenterWarehouse> RenterWarehouses { get; set; }    
+        public ICollection<Product> Products { get; set; }    
         public Renter()
         {
             

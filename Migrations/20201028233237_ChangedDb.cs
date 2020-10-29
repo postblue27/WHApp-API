@@ -8,10 +8,6 @@ namespace WHApp_API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_RenterWarehouses_Renters_UserId",
-                table: "RenterWarehouses");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Warehouses_Owners_UserId",
                 table: "Warehouses");
 
@@ -19,27 +15,13 @@ namespace WHApp_API.Migrations
                 name: "IX_Warehouses_UserId",
                 table: "Warehouses");
 
-            migrationBuilder.DropIndex(
-                name: "IX_RenterWarehouses_UserId",
-                table: "RenterWarehouses");
-
             migrationBuilder.DropColumn(
                 name: "UserId",
                 table: "Warehouses");
 
-            migrationBuilder.DropColumn(
-                name: "UserId",
-                table: "RenterWarehouses");
-
             migrationBuilder.AddColumn<int>(
                 name: "OwnerId",
                 table: "Warehouses",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "RenterId",
-                table: "RenterWarehouses",
                 nullable: false,
                 defaultValue: 0);
 
@@ -67,11 +49,18 @@ namespace WHApp_API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    ProductCode = table.Column<string>(nullable: true)
+                    ProductCode = table.Column<string>(nullable: true),
+                    RenterId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.ForeignKey(
+                        name: "FK_Products_Renters_RenterId",
+                        column: x => x.RenterId,
+                        principalTable: "Renters",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,7 +140,7 @@ namespace WHApp_API.Migrations
                 name: "ProductsForShipping",
                 columns: table => new
                 {
-                    ProductForShippingId = table.Column<int>(nullable: false)
+                    ProductShippingId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CarId = table.Column<int>(nullable: false),
                     ProductId = table.Column<int>(nullable: false),
@@ -159,7 +148,7 @@ namespace WHApp_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductsForShipping", x => x.ProductForShippingId);
+                    table.PrimaryKey("PK_ProductsForShipping", x => x.ProductShippingId);
                     table.ForeignKey(
                         name: "FK_ProductsForShipping_Cars_CarId",
                         column: x => x.CarId,
@@ -173,20 +162,46 @@ namespace WHApp_API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductForShipping",
+                columns: table => new
+                {
+                    ProductForShippingId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ShipmentDeadline = table.Column<DateTime>(nullable: false),
+                    ProductInWarehouseId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductForShipping", x => x.ProductForShippingId);
+                    table.ForeignKey(
+                        name: "FK_ProductForShipping_ProductsInWarehouse_ProductInWarehouseId",
+                        column: x => x.ProductInWarehouseId,
+                        principalTable: "ProductsInWarehouse",
+                        principalColumn: "ProductInWarehouseId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Warehouses_OwnerId",
                 table: "Warehouses",
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RenterWarehouses_RenterId",
-                table: "RenterWarehouses",
-                column: "RenterId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cars_DriverId",
                 table: "Cars",
                 column: "DriverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductForShipping_ProductInWarehouseId",
+                table: "ProductForShipping",
+                column: "ProductInWarehouseId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_RenterId",
+                table: "Products",
+                column: "RenterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductsForShipping_CarId",
@@ -221,14 +236,6 @@ namespace WHApp_API.Migrations
                 column: "WarehouseId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_RenterWarehouses_Renters_RenterId",
-                table: "RenterWarehouses",
-                column: "RenterId",
-                principalTable: "Renters",
-                principalColumn: "UserId",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Warehouses_Owners_OwnerId",
                 table: "Warehouses",
                 column: "OwnerId",
@@ -240,12 +247,11 @@ namespace WHApp_API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_RenterWarehouses_Renters_RenterId",
-                table: "RenterWarehouses");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Warehouses_Owners_OwnerId",
                 table: "Warehouses");
+
+            migrationBuilder.DropTable(
+                name: "ProductForShipping");
 
             migrationBuilder.DropTable(
                 name: "ProductsForShipping");
@@ -269,28 +275,13 @@ namespace WHApp_API.Migrations
                 name: "IX_Warehouses_OwnerId",
                 table: "Warehouses");
 
-            migrationBuilder.DropIndex(
-                name: "IX_RenterWarehouses_RenterId",
-                table: "RenterWarehouses");
-
             migrationBuilder.DropColumn(
                 name: "OwnerId",
                 table: "Warehouses");
 
-            migrationBuilder.DropColumn(
-                name: "RenterId",
-                table: "RenterWarehouses");
-
             migrationBuilder.AddColumn<int>(
                 name: "UserId",
                 table: "Warehouses",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "UserId",
-                table: "RenterWarehouses",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
@@ -299,19 +290,6 @@ namespace WHApp_API.Migrations
                 name: "IX_Warehouses_UserId",
                 table: "Warehouses",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RenterWarehouses_UserId",
-                table: "RenterWarehouses",
-                column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_RenterWarehouses_Renters_UserId",
-                table: "RenterWarehouses",
-                column: "UserId",
-                principalTable: "Renters",
-                principalColumn: "UserId",
-                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Warehouses_Owners_UserId",

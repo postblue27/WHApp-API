@@ -9,6 +9,7 @@ namespace WHApp_API.Interfaces
         void Add<T>(T entity) where T: class;
         void Delete<T>(T entity) where T: class;
         Task<bool> SaveAll();
-        Task<List<Warehouse>> GetWarehouses();
+        Task<bool> UserExistsById(int UserId, string UserType);
+        
     }
 }

@@ -25,16 +25,29 @@ namespace WHApp_API.Data
         
         }
 
-        public async Task<List<Warehouse>> GetWarehouses()
-        {
-            var warehousesList = await _context.Warehouses.Include(w => w.Owner).ToListAsync();
-            
-            return warehousesList;
-        }
-
         public async Task<bool> SaveAll()
         {
             return await _context.SaveChangesAsync() > 0; // will return true if there is more than 0 changes
+        }
+
+        public async Task<bool> UserExistsById(int userId, string userType)
+        {
+            switch(userType)
+            {
+                case "Renter":
+                    if(await _context.Renters.AnyAsync(u => u.UserId == userId))
+                        return true;
+                        break;
+                case "Owner":
+                    if(await _context.Owners.AnyAsync(u => u.UserId == userId))
+                        return true;
+                        break;
+                case "Driver":
+                    if(await _context.Drivers.AnyAsync(u => u.UserId == userId))
+                        return true;
+                        break;
+            }
+            return false;
         }
     }
 }
