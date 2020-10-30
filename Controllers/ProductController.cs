@@ -61,15 +61,15 @@ namespace WHApp_API.Controllers
             }
             return BadRequest("Problem adding product");
         }
-        [HttpGet("{productId}", Name = "GetProduct" )]
-        public async Task<IActionResult> GetProduct(int productId)
+        [HttpGet("get-products-in-warehouse")]
+        public async Task<IActionResult> GetProductsInWarehouse([FromHeader]int warehouseId)
         {
-            var product = await _productrepo.GetProduct(productId);
+            var piwList = await _productrepo.GetProductsInWarehouse(warehouseId);
 
-            if(product == null)
-                return BadRequest("Product does not exist");
+            if(piwList == null)
+                return BadRequest("No products in this warehouse yet");
 
-            return Ok(product);
+            return Ok(piwList);
         }
     }
 }

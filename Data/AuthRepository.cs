@@ -57,15 +57,15 @@ namespace WHApp_API.Data
         {
             switch(userType)
             {
-                case "Renter":
+                case UserTypes.Renter:
                     if(await _context.Renters.AnyAsync(u => u.Username == username))
                         return true;
                         break;
-                case "Owner":
+                case UserTypes.Owner:
                     if(await _context.Owners.AnyAsync(u => u.Username == username))
                         return true;
                         break;
-                case "Driver":
+                case UserTypes.Driver:
                     if(await _context.Drivers.AnyAsync(u => u.Username == username))
                         return true;
                         break;
@@ -117,13 +117,13 @@ namespace WHApp_API.Data
             var user = new User();
             switch(userType)
             {
-                case "Renter":
+                case UserTypes.Renter:
                     user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
                         break;
-                case "Owner":
+                case UserTypes.Owner:
                     user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
                         break;
-                case "Driver":
+                case UserTypes.Driver:
                     user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
                         break;
             }

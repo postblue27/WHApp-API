@@ -10,6 +10,7 @@ namespace WHApp_API.Helpers
         {
             CreateMap<WarehouseForCreateDto, Warehouse>();    
             CreateMap<ProductToAddDto, Product>();
+            CreateMap<CarToCreateDto, Car>();
         }
     }
 }
