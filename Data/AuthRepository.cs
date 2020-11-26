@@ -13,9 +13,9 @@ namespace WHApp_API.Data
             _context = context;
         }
 
-        public async Task<User> Register(string username, string userType, string password)
+        public async Task<User> Register(string username, string userType, string email, string password)
         {
-            User user = new User(username);
+            User user = new User(username, email);
             byte[] passwordHash, passwordSalt;
 
             CreatePasswordHash(password, out passwordHash, out passwordSalt);

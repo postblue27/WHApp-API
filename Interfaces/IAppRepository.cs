@@ -8,6 +8,8 @@ namespace WHApp_API.Interfaces
     {
         void Add<T>(T entity) where T: class;
         void Delete<T>(T entity) where T: class;
+
+        void Update<T>(T entity) where T : class;
         Task<bool> SaveAll();
         Task<bool> UserExistsById(int UserId, string UserType);
         

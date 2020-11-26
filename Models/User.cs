@@ -15,5 +15,10 @@ namespace WHApp_API.Models
         {
             this.Username = username;
         }
+        public User(string username, string email)
+        {
+            this.Username = username;
+            this.Email = email;
+        }
     }
 }

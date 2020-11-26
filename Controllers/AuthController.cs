@@ -33,7 +33,7 @@ namespace WHApp_API.Controllers
                 return BadRequest("User already exists.");
 
             var createdUser = await _repo.Register(userForRegister.Username, 
-                userForRegister.UserType, userForRegister.Password);
+                userForRegister.UserType, userForRegister.Email, userForRegister.Password);
             return Ok(createdUser);
         }
         [HttpPost("login")]
