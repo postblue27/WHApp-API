@@ -13,6 +13,7 @@ namespace WHApp_API.Data
         public DbSet<Zone> Zones { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Car> Cars { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductShipping> ProductsForShipping { get; set; }
         public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
@@ -25,6 +26,8 @@ namespace WHApp_API.Data
                 .HasKey(r => r.UserId);
             modelBuilder.Entity<Driver>()
                 .HasKey(d => d.UserId);
+            modelBuilder.Entity<Admin>()
+                .HasKey(a => a.UserId);
 
             modelBuilder.Entity<Owner>()
                 .HasMany(o => o.Warehouses)

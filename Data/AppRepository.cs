@@ -34,16 +34,20 @@ namespace WHApp_API.Data
         {
             switch(userType)
             {
-                case "Renter":
+                case UserTypes.Renter:
                     if(await _context.Renters.AnyAsync(u => u.UserId == userId))
                         return true;
                         break;
-                case "Owner":
+                case UserTypes.Owner:
                     if(await _context.Owners.AnyAsync(u => u.UserId == userId))
                         return true;
                         break;
-                case "Driver":
+                case UserTypes.Driver:
                     if(await _context.Drivers.AnyAsync(u => u.UserId == userId))
+                        return true;
+                        break;
+                case UserTypes.Admin:
+                    if(await _context.Admins.AnyAsync(u => u.UserId == userId))
                         return true;
                         break;
             }

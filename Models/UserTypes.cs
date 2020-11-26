@@ -5,5 +5,6 @@ namespace WHApp_API.Models
         public const string Renter = "Renter";
         public const string Owner = "Owner";
         public const string Driver = "Driver";
+        public const string Admin = "Admin";
     }
 }

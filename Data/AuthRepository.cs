@@ -25,21 +25,26 @@ namespace WHApp_API.Data
 
             switch(userType)
             {
-                case "Renter":
+                case UserTypes.Renter:
                     Renter renter = new Renter(user);
                     await _context.Renters.AddAsync(renter);
                     await _context.SaveChangesAsync();
                     return renter;
-                case "Owner":
+                case UserTypes.Owner:
                     Owner owner = new Owner(user);  
                     await _context.Owners.AddAsync(owner);
                     await _context.SaveChangesAsync();    
                     return owner;
-                case "Driver":
+                case UserTypes.Driver:
                     Driver driver = new Driver(user);
                     await _context.Drivers.AddAsync(driver);
                     await _context.SaveChangesAsync();
                     return driver;
+                case UserTypes.Admin:
+                    Admin admin = new Admin(user);
+                    await _context.Admins.AddAsync(admin);
+                    await _context.SaveChangesAsync();
+                    return admin;
                 default:
                     return user;
             }
@@ -69,6 +74,10 @@ namespace WHApp_API.Data
                     if(await _context.Drivers.AnyAsync(u => u.Username == username))
                         return true;
                         break;
+                case UserTypes.Admin:
+                    if(await _context.Admins.AnyAsync(u => u.Username == username))
+                        return true;
+                        break;
             }
             return false;
         }
@@ -77,14 +86,17 @@ namespace WHApp_API.Data
             var user = new User();
             switch(userType)
             {
-                case "Renter":
+                case UserTypes.Renter:
                     user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
                         break;
-                case "Owner":
+                case UserTypes.Owner:
                     user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
                         break;
-                case "Driver":
+                case UserTypes.Driver:
                     user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
+                        break;
+                case UserTypes.Admin:
+                    user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
                         break;
             }
 
@@ -125,6 +137,9 @@ namespace WHApp_API.Data
                         break;
                 case UserTypes.Driver:
                     user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
+                        break;
+                case UserTypes.Admin:
+                    user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
                         break;
             }
 
