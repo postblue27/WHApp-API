@@ -8,7 +8,7 @@ namespace WHApp_API.Models
         public string ProductCode { get; set; }
         public int Volume { get; set; }
         public int UserId { get; set; }
-        public Renter Renter { get; set; }
+        public User Renter { get; set; }
         public ProductShipping ProductShipping { get; set; }
         public ProductInWarehouse ProductInWarehouse { get; set; }
         public Product(){}

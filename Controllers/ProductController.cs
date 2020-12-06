@@ -45,7 +45,7 @@ namespace WHApp_API.Controllers
                 return BadRequest("User does not exist");
 
             var productToCreate = _mapper.Map<Product>(productToAddDto);
-            productToCreate.UserId = user.UserId;
+            productToCreate.UserId = user.Id;
 
             _apprepo.Add(productToCreate);
             if(!await _apprepo.SaveAll())

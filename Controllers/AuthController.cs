@@ -4,6 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -19,40 +21,54 @@ namespace WHApp_API.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
+        public AuthController(IAuthRepository repo, IConfiguration config,
+            UserManager<User> userManager, SignInManager<User> signInManager,
+            IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
             _config = config;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserForRegisterDto userForRegister)
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            userForRegister.Username = userForRegister.Username.ToLower();
-
-            if (await _repo.UserExists(userForRegister.Username,userForRegister.UserType))
-                return BadRequest("User already exists.");
-
-            var createdUser = await _repo.Register(userForRegister.Username, 
-                userForRegister.UserType, userForRegister.Email, userForRegister.Password);
-            return Ok(createdUser);
+            var userToCreate = _mapper.Map<User>(userForRegisterDto);
+            var result = await _userManager.CreateAsync(userToCreate, userForRegisterDto.Password);
+            if(result.Succeeded)
+            {
+                return Ok(userToCreate);
+            }
+            return BadRequest(result.Errors);
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            //throw new Exception("my error message");
+            var user = await _userManager.FindByNameAsync(userForLoginDto.Username);
 
-            userForLoginDto.Username = userForLoginDto.Username.ToLower();
+            var result = await _signInManager.CheckPasswordSignInAsync(user, 
+                userForLoginDto.Password, false);
 
-            var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.UserType, userForLoginDto.Password);
-
-            if (userFromRepo == null)
-                return Unauthorized();
-
+            if(result.Succeeded){
+                return Ok(new
+                {
+                    token = GenerateJwtToken(user),
+                    user
+                });
+            }
+            return Unauthorized();
+        }
+        private string GenerateJwtToken(User user)
+        {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.UserId.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Username),
-                new Claim(ClaimTypes.Role, userForLoginDto.UserType)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName)
+                // new Claim(ClaimTypes.Role, user.UserType)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
@@ -69,11 +85,8 @@ namespace WHApp_API.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return Ok(new
-            {
-                token = tokenHandler.WriteToken(token)
-            });
+            
+            return tokenHandler.WriteToken(token);
         }
     }
 }

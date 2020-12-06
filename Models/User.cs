@@ -1,24 +1,21 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace WHApp_API.Models
 {
-    public class User
+    public class User : IdentityUser<int>
     {
-        public int UserId { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
+        public ICollection<Car> DriverCars { get; set; }
+        public ICollection<Warehouse> OwnerWarehouses { get; set; }
+        public ICollection<RenterWarehouse> RenterWarehouses { get; set; } 
+        public ICollection<Product> RenterProducts { get; set; }  
+        public ICollection<UserRole> UserRoles { get; set; }
 
         public User(){}
-        public User(string username)
-        {
-            this.Username = username;
-        }
         public User(string username, string email)
         {
-            this.Username = username;
-            this.Email = email;
+            this.UserName = username;
+            this.Email = email; 
         }
     }
 }

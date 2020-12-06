@@ -1,40 +1,46 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WHApp_API.Models;
 
 namespace WHApp_API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User, Role, int, 
+        IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options){ }
-        public DbSet<Owner> Owners { get; set; }
-        public DbSet<Renter> Renters { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<RenterWarehouse> RenterWarehouses { get; set; }
         public DbSet<Zone> Zones { get; set; }
-        public DbSet<Driver> Drivers { get; set; }
         public DbSet<Car> Cars { get; set; }
-        public DbSet<Admin> Admins { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductShipping> ProductsForShipping { get; set; }
         public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //users and warehouse relations
-            modelBuilder.Entity<Owner>()
-                .HasKey(o => o.UserId);
-            modelBuilder.Entity<Renter>()
-                .HasKey(r => r.UserId);
-            modelBuilder.Entity<Driver>()
-                .HasKey(d => d.UserId);
-            modelBuilder.Entity<Admin>()
-                .HasKey(a => a.UserId);
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Owner>()
-                .HasMany(o => o.Warehouses)
+            modelBuilder.Entity<UserRole>(userRole => {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(u => u.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();    
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired(); 
+            });
+
+            //users and warehouse relations
+
+            modelBuilder.Entity<User>()
+                .HasMany(o => o.OwnerWarehouses)
                 .WithOne(w => w.Owner)
                 .HasForeignKey(w => w.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Renter>()
+            modelBuilder.Entity<User>()
                 .HasMany(r => r.RenterWarehouses)
                 .WithOne(rw => rw.Renter)
                 // .HasForeignKey(rw => rw.RenterId)
@@ -44,16 +50,16 @@ namespace WHApp_API.Data
                 .HasMany(w => w.RenterWarehouses)
                 .WithOne(rw => rw.Warehouse)
                 .HasForeignKey(rw => rw.WarehouseId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Driver>()
-                .HasMany(d => d.Cars)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<User>()
+                .HasMany(d => d.DriverCars)
                 .WithOne(c => c.Driver)
                 .HasForeignKey(c => c.DriverId)
                 .OnDelete(DeleteBehavior.Cascade);
             
             //user and product relations
-            modelBuilder.Entity<Renter>()
-                .HasMany(r => r.Products)
+            modelBuilder.Entity<User>()
+                .HasMany(r => r.RenterProducts)
                 .WithOne(p => p.Renter)
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -75,7 +81,7 @@ namespace WHApp_API.Data
                 .HasMany(w => w.ProductsInWarehouse)
                 .WithOne(piw => piw.Warehouse)
                 .HasForeignKey(piw => piw.WarehouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.ProductInWarehouse)
                 .WithOne(piw => piw.Product)
