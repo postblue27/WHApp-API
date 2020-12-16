@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using WHApp_API.Models;
@@ -11,22 +12,22 @@ namespace WHApp_API.Helpers
             string adminUsername = "admin";
             string adminEmail = "admin@gmail.com";
             string password = "password";
-            if (await roleManager.FindByNameAsync("Admin") == null)
+            var roles = new List<Role>
             {
-                await roleManager.CreateAsync(new Role{Name = "Admin"});
-            }
-            if (await roleManager.FindByNameAsync("Renter") == null)
+                new Role{Name = "Admin"},
+                new Role{Name = "Owner"},
+                new Role{Name = "Renter"},
+                new Role{Name = "Driver"},
+            };
+
+            foreach (var role in roles)
             {
-                await roleManager.CreateAsync(new Role{Name = "Renter"});
+                if (await roleManager.FindByNameAsync(role.Name) == null)
+                {
+                    await roleManager.CreateAsync(role);
+                }
             }
-            if (await roleManager.FindByNameAsync("Owner") == null)
-            {
-                await roleManager.CreateAsync(new Role{Name = "Owner"});
-            }
-            if (await roleManager.FindByNameAsync("Driver") == null)
-            {
-                await roleManager.CreateAsync(new Role{Name = "Driver"});
-            }
+
             if (await userManager.FindByNameAsync(adminUsername) == null)
             {
                 User admin = new User { Email = adminEmail, UserName = adminUsername };

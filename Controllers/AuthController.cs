@@ -24,69 +24,79 @@ namespace WHApp_API.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly RoleManager<Role> _roleManager;
         public AuthController(IAuthRepository repo, IConfiguration config,
             UserManager<User> userManager, SignInManager<User> signInManager,
-            IMapper mapper)
+            IMapper mapper, RoleManager<Role> roleManager)
         {
+            _roleManager = roleManager;
             _mapper = mapper;
             _repo = repo;
             _config = config;
             _signInManager = signInManager;
             _userManager = userManager;
         }
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
+    {
+        if (!await _roleManager.RoleExistsAsync(userForRegisterDto.RoleName))
+            return BadRequest("Provided user role does not exist");
+        var userToCreate = _mapper.Map<User>(userForRegisterDto);
+        var userCreationResult = await _userManager.CreateAsync(userToCreate, userForRegisterDto.Password);
+        if(!userCreationResult.Succeeded)
+            return BadRequest(userCreationResult.Errors);
+        var roleAdditionResult = await _userManager.AddToRoleAsync(userToCreate, userForRegisterDto.RoleName);
+        if (!roleAdditionResult.Succeeded)
+            return BadRequest(roleAdditionResult.Errors);
+
+        return Ok(userToCreate);
+    }
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
+    {
+        var user = await _userManager.FindByNameAsync(userForLoginDto.Username);
+
+        var result = await _signInManager.CheckPasswordSignInAsync(user,
+            userForLoginDto.Password, false);
+
+        if (result.Succeeded)
         {
-            var userToCreate = _mapper.Map<User>(userForRegisterDto);
-            var result = await _userManager.CreateAsync(userToCreate, userForRegisterDto.Password);
-            if(result.Succeeded)
+            if(!await _userManager.IsInRoleAsync(user, userForLoginDto.RoleName))
+                return Unauthorized("User does not have access to this role");
+
+            return Ok(new
             {
-                return Ok(userToCreate);
-            }
-            return BadRequest(result.Errors);
+                token = GenerateJwtToken(user),
+                user
+            });
         }
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
-        {
-            var user = await _userManager.FindByNameAsync(userForLoginDto.Username);
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, 
-                userForLoginDto.Password, false);
-
-            if(result.Succeeded){
-                return Ok(new
-                {
-                    token = GenerateJwtToken(user),
-                    user
-                });
-            }
-            return Unauthorized();
-        }
-        private string GenerateJwtToken(User user)
-        {
-            var claims = new List<Claim>
+        return Unauthorized("Problem logging in");
+    }
+    private string GenerateJwtToken(User user)
+    {
+        var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName)
                 // new Claim(ClaimTypes.Role, user.UserType)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.Now.AddDays(1),
+            SigningCredentials = creds
+        };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenHandler = new JwtSecurityTokenHandler();
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            
-            return tokenHandler.WriteToken(token);
-        }
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
     }
+}
 }
