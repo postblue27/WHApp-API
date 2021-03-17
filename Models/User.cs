@@ -17,5 +17,6 @@ namespace WHApp_API.Models
             this.UserName = username;
             this.Email = email; 
         }
+        
     }
 }

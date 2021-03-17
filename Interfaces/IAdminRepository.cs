@@ -6,6 +6,7 @@ namespace WHApp_API.Interfaces
 {
     public interface IAdminRepository
     {
+        Task<List<User>> GetUsers();
         // Task<List<Renter>> GetRenters();
         // Task<List<Owner>> GetOwners();
         // Task<List<Driver>> GetDrivers();

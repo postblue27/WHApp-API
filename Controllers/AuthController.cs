@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,7 @@ namespace WHApp_API.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
         }
+    //TODO: only let admins create new admin accounts
     [HttpPost("register")]
     public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
     {
@@ -68,20 +70,22 @@ namespace WHApp_API.Controllers
 
             return Ok(new
             {
-                token = GenerateJwtToken(user),
+                token = await GenerateJwtToken(user),
                 user
             });
         }
         return Unauthorized("Problem logging in");
     }
-    private string GenerateJwtToken(User user)
+    private async Task<string> GenerateJwtToken(User user)
     {
         var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
-                // new Claim(ClaimTypes.Role, user.UserType)
+                new Claim(ClaimTypes.Name, user.UserName),
             };
+
+        var roles = await _userManager.GetRolesAsync(user);
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
 
