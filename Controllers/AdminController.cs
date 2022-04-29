@@ -51,6 +51,7 @@ namespace WHApp_API.Controllers
         [HttpPost("update-user/{userType}")]
         public async Task<IActionResult> UpdateUser(string userType, [FromBody]User userForUpdate)
         {
+            var a = 10;
             switch(userType)
             {
                 case UserTypes.Renter:
