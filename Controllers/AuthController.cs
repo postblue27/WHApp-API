@@ -25,16 +25,26 @@ namespace WHApp_API.Controllers
             _config = config;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserForRegisterDto userForRegister)
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            userForRegister.Username = userForRegister.Username.ToLower();
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
-            if (await _repo.UserExists(userForRegister.Username,userForRegister.UserType))
+            if (await _repo.UserExists(userForRegisterDto.Username, userForRegisterDto.UserType))
                 return BadRequest("User already exists.");
 
-            var createdUser = await _repo.Register(userForRegister.Username, 
-                userForRegister.UserType, userForRegister.Email, userForRegister.Password);
-            return Ok(createdUser);
+            try{
+                var createdUser = await _repo.Register(userForRegisterDto);
+                return Ok(createdUser);
+            }
+            catch(Exception ex)
+            {
+                switch (ex.GetType())
+                {
+                    // case typeof(TypeLoadException):
+                    //     return;
+                }
+            }
+            return Ok();
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)

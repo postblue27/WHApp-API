@@ -1,5 +1,9 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WHApp_API.Dtos;
 using WHApp_API.Interfaces;
 using WHApp_API.Models;
 
@@ -13,42 +17,23 @@ namespace WHApp_API.Data
             _context = context;
         }
 
-        public async Task<User> Register(string username, string userType, string email, string password)
+        public async Task<object> Register(UserForRegisterDto userForRegisterDto)
         {
-            User user = new User(username, email);
+            User user = new User(userForRegisterDto.Username, userForRegisterDto.Email);
             byte[] passwordHash, passwordSalt;
 
-            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            CreatePasswordHash(userForRegisterDto.Password, out passwordHash, out passwordSalt);
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-
-            switch(userType)
-            {
-                case UserTypes.Renter:
-                    Renter renter = new Renter(user);
-                    await _context.Renters.AddAsync(renter);
-                    await _context.SaveChangesAsync();
-                    return renter;
-                case UserTypes.Owner:
-                    Owner owner = new Owner(user);  
-                    await _context.Owners.AddAsync(owner);
-                    await _context.SaveChangesAsync();    
-                    return owner;
-                case UserTypes.Driver:
-                    Driver driver = new Driver(user);
-                    await _context.Drivers.AddAsync(driver);
-                    await _context.SaveChangesAsync();
-                    return driver;
-                case UserTypes.Admin:
-                    Admin admin = new Admin(user);
-                    await _context.Admins.AddAsync(admin);
-                    await _context.SaveChangesAsync();
-                    return admin;
-                default:
-                    return user;
-            }
+            
+            var userTypeFullName = Extensions.GetUserTypeFullName(typeof(Renter).Namespace, userForRegisterDto.UserType);
+            var typedUser = Extensions.GetTypedUserInstance(userForRegisterDto, userTypeFullName);
+            _context.Add(typedUser);
+            await _context.SaveChangesAsync();
+            return Task.FromResult(typedUser);
         }
+
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using(var hmac = new System.Security.Cryptography.HMACSHA512())

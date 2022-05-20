@@ -103,5 +103,6 @@ namespace WHApp_API.Data
                 .HasForeignKey<ProductForShipping>(pfs => pfs.ProductInWarehouseId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-    }
+        
+    }   
 }
