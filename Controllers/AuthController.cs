@@ -43,7 +43,6 @@ namespace WHApp_API.Controllers
                     // case typeof(TypeLoadException):
                     //     return;
                 }
-                
             }
             return Ok();
         }
