@@ -19,89 +19,89 @@ namespace WHApp_API.Data
         public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //users and warehouse relations
-            modelBuilder.Entity<Owner>()
-                .HasKey(o => o.UserId);
-            modelBuilder.Entity<Renter>()
-                .HasKey(r => r.UserId);
-            modelBuilder.Entity<Driver>()
-                .HasKey(d => d.UserId);
-            modelBuilder.Entity<Admin>()
-                .HasKey(a => a.UserId);
+            // //users and warehouse relations
+            // modelBuilder.Entity<Owner>()
+            //     .HasKey(o => o.UserId);
+            // modelBuilder.Entity<Renter>()
+            //     .HasKey(r => r.UserId);
+            // modelBuilder.Entity<Driver>()
+            //     .HasKey(d => d.UserId);
+            // modelBuilder.Entity<Admin>()
+            //     .HasKey(a => a.UserId);
 
-            modelBuilder.Entity<Owner>()
-                .HasMany(o => o.Warehouses)
-                .WithOne(w => w.Owner)
-                .HasForeignKey(w => w.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Renter>()
-                .HasMany(r => r.RenterWarehouses)
-                .WithOne(rw => rw.Renter)
-                // .HasForeignKey(rw => rw.RenterId)
-                .HasForeignKey(rw => rw.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Warehouse>()
-                .HasMany(w => w.RenterWarehouses)
-                .WithOne(rw => rw.Warehouse)
-                .HasForeignKey(rw => rw.WarehouseId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Driver>()
-                .HasMany(d => d.Cars)
-                .WithOne(c => c.Driver)
-                .HasForeignKey(c => c.DriverId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // modelBuilder.Entity<Owner>()
+            //     .HasMany(o => o.Warehouses)
+            //     .WithOne(w => w.Owner)
+            //     .HasForeignKey(w => w.OwnerId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+            // modelBuilder.Entity<Renter>()
+            //     .HasMany(r => r.RenterWarehouses)
+            //     .WithOne(rw => rw.Renter)
+            //     // .HasForeignKey(rw => rw.RenterId)
+            //     .HasForeignKey(rw => rw.UserId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+            // modelBuilder.Entity<Warehouse>()
+            //     .HasMany(w => w.RenterWarehouses)
+            //     .WithOne(rw => rw.Warehouse)
+            //     .HasForeignKey(rw => rw.WarehouseId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+            // modelBuilder.Entity<Driver>()
+            //     .HasMany(d => d.Cars)
+            //     .WithOne(c => c.Driver)
+            //     .HasForeignKey(c => c.DriverId)
+            //     .OnDelete(DeleteBehavior.Cascade);
             
-            //user and product relations
-            modelBuilder.Entity<Renter>()
-                .HasMany(r => r.Products)
-                .WithOne(p => p.Renter)
-                .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // //user and product relations
+            // modelBuilder.Entity<Renter>()
+            //     .HasMany(r => r.Products)
+            //     .WithOne(p => p.Renter)
+            //     .HasForeignKey(p => p.UserId)
+            //     .OnDelete(DeleteBehavior.Cascade);
 
-            //car and product relations
-            modelBuilder.Entity<Car>()
-                .HasMany(c => c.ProductsForShipping)
-                .WithOne(pfs => pfs.Car)
-                .HasForeignKey(pfs => pfs.CarId)
-                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.ProductShipping)
-                .WithOne(pfs => pfs.Product)
-                .HasForeignKey<ProductShipping>(pfs => pfs.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // //car and product relations
+            // modelBuilder.Entity<Car>()
+            //     .HasMany(c => c.ProductsForShipping)
+            //     .WithOne(pfs => pfs.Car)
+            //     .HasForeignKey(pfs => pfs.CarId)
+            //     .OnDelete(DeleteBehavior.NoAction);
+            // modelBuilder.Entity<Product>()
+            //     .HasOne(p => p.ProductShipping)
+            //     .WithOne(pfs => pfs.Product)
+            //     .HasForeignKey<ProductShipping>(pfs => pfs.ProductId)
+            //     .OnDelete(DeleteBehavior.Cascade);
             
-            //warehouse and product relations
-            modelBuilder.Entity<Warehouse>()
-                .HasMany(w => w.ProductsInWarehouse)
-                .WithOne(piw => piw.Warehouse)
-                .HasForeignKey(piw => piw.WarehouseId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.ProductInWarehouse)
-                .WithOne(piw => piw.Product)
-                .HasForeignKey<ProductInWarehouse>(piw => piw.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // //warehouse and product relations
+            // modelBuilder.Entity<Warehouse>()
+            //     .HasMany(w => w.ProductsInWarehouse)
+            //     .WithOne(piw => piw.Warehouse)
+            //     .HasForeignKey(piw => piw.WarehouseId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+            // modelBuilder.Entity<Product>()
+            //     .HasOne(p => p.ProductInWarehouse)
+            //     .WithOne(piw => piw.Product)
+            //     .HasForeignKey<ProductInWarehouse>(piw => piw.ProductId)
+            //     .OnDelete(DeleteBehavior.Cascade);
             
-            //warehouse and zone relations
-            modelBuilder.Entity<Warehouse>()
-                .HasMany(w => w.Zones)
-                .WithOne(z => z.Warehouse)
-                .HasForeignKey(z => z.WarehouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // //warehouse and zone relations
+            // modelBuilder.Entity<Warehouse>()
+            //     .HasMany(w => w.Zones)
+            //     .WithOne(z => z.Warehouse)
+            //     .HasForeignKey(z => z.WarehouseId)
+            //     .OnDelete(DeleteBehavior.Cascade);
             
-            //product and zone relations
-            modelBuilder.Entity<Zone>()
-                .HasMany(z => z.ProductsInWarehouse)
-                .WithOne(piw => piw.Zone)
-                .HasForeignKey(piw => piw.ZoneId)
-                .OnDelete(DeleteBehavior.NoAction);
+            // //product and zone relations
+            // modelBuilder.Entity<Zone>()
+            //     .HasMany(z => z.ProductsInWarehouse)
+            //     .WithOne(piw => piw.Zone)
+            //     .HasForeignKey(piw => piw.ZoneId)
+            //     .OnDelete(DeleteBehavior.NoAction);
 
-            //product for shipping relations
-            modelBuilder.Entity<ProductInWarehouse>()
-                .HasOne(p => p.ProductForShipping)
-                .WithOne(pfs => pfs.ProductInWarehouse)
-                .HasForeignKey<ProductForShipping>(pfs => pfs.ProductInWarehouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // //product for shipping relations
+            // modelBuilder.Entity<ProductInWarehouse>()
+            //     .HasOne(p => p.ProductForShipping)
+            //     .WithOne(pfs => pfs.ProductInWarehouse)
+            //     .HasForeignKey<ProductForShipping>(pfs => pfs.ProductInWarehouseId)
+            //     .OnDelete(DeleteBehavior.Cascade);
         }
         
     }   
