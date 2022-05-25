@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WHApp_API.Dtos;
+using WHApp_API.Helpers.CustomExceptions;
 using WHApp_API.Interfaces;
 using WHApp_API.Models;
 
@@ -19,6 +20,10 @@ namespace WHApp_API.Data
 
         public async Task<object> Register(UserForRegisterDto userForRegisterDto)
         {
+            if(await UserExistsAsync(userForRegisterDto.Username, userForRegisterDto.UserType))
+            {
+                throw new UserExistsException();
+            }
             User user = new User(userForRegisterDto.Username, userForRegisterDto.Email);
             byte[] passwordHash, passwordSalt;
 
@@ -27,7 +32,7 @@ namespace WHApp_API.Data
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
             
-            var userTypeFullName = Extensions.GetUserTypeFullName(typeof(Renter).Namespace, userForRegisterDto.UserType);
+            var userTypeFullName = Extensions.GetTypeFullName(typeof(Renter).Namespace, userForRegisterDto.UserType);
             var typedUser = Extensions.GetTypedUserInstance(user, userTypeFullName);
             _context.Add(typedUser);
             await _context.SaveChangesAsync();
@@ -43,25 +48,26 @@ namespace WHApp_API.Data
             }
         }
 
-        public async Task<bool> UserExists(string username, string userType)
+        public async Task<bool> UserExistsAsync(string username, string userType)
         {
-            
+            var userTypeFullName = Extensions.GetTypeFullName(typeof(Renter).Namespace, userType);
+            // _context.FindAsync
             switch(userType)
             {
                 case UserTypes.Renter:
-                    if(await _context.Renters.AnyAsync(u => u.Username == username))
+                    if(await _context.Renters.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
                         return true;
                         break;
                 case UserTypes.Owner:
-                    if(await _context.Owners.AnyAsync(u => u.Username == username))
+                    if(await _context.Owners.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
                         return true;
                         break;
                 case UserTypes.Driver:
-                    if(await _context.Drivers.AnyAsync(u => u.Username == username))
+                    if(await _context.Drivers.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
                         return true;
                         break;
                 case UserTypes.Admin:
-                    if(await _context.Admins.AnyAsync(u => u.Username == username))
+                    if(await _context.Admins.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
                         return true;
                         break;
             }

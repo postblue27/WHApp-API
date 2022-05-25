@@ -36,7 +36,7 @@ namespace WHApp_API.Data
                 }
             }
         }
-        public static Type GetUserTypeFullName(string namespaceName, string typeName)
+        public static Type GetTypeFullName(string namespaceName, string typeName)
         {
             return Assembly.GetExecutingAssembly().GetType($"{namespaceName}.{typeName}", true);
         }

@@ -7,7 +7,7 @@ namespace WHApp_API.Interfaces
     public interface IAuthRepository
     {
         Task<object> Register(UserForRegisterDto userForRegisterDto);
-        Task<bool> UserExists(string username, string userType);
+        Task<bool> UserExistsAsync(string username, string userType);
         Task<User> Login(string username, string userType, string password);
         Task<User> GetUser(string username, string userType);
     }

@@ -28,11 +28,6 @@ namespace WHApp_API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
-
-            if (await _repo.UserExists(userForRegisterDto.Username, userForRegisterDto.UserType))
-                return BadRequest("User already exists.");
-
             try{
                 var createdUser = await _repo.Register(userForRegisterDto);
                 return Ok(createdUser);
@@ -46,6 +41,8 @@ namespace WHApp_API.Controllers
                         return BadRequest($"Error loading user type \"{userForRegisterDto.UserType}\". Check the spelling of the user type.");
                     case "System.ArgumentNullException":
                         return BadRequest($"Some of the arguments were not provided. Check your payload.");
+                    case "WHApp_API.Helpers.CustomExceptions.UserExistsException":
+                        return BadRequest(ex.Message);
                 }
             }
             return BadRequest("Something went wrong...");
