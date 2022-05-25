@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,19 +39,20 @@ namespace WHApp_API.Controllers
             }
             catch(Exception ex)
             {
-                switch (ex.GetType())
+                Console.WriteLine(ex.GetType().ToString());
+                switch (ex.GetType().ToString())
                 {
-                    // case typeof(TypeLoadException):
-                    //     return;
+                    case "System.TypeLoadException":
+                        return BadRequest($"Error loading user type \"{userForRegisterDto.UserType}\". Check the spelling of the user type.");
+                    case "System.ArgumentNullException":
+                        return BadRequest($"Some of the arguments were not provided. Check your payload.");
                 }
             }
-            return Ok();
+            return BadRequest("Something went wrong...");
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            //throw new Exception("my error message");
-
             userForLoginDto.Username = userForLoginDto.Username.ToLower();
 
             var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.UserType, userForLoginDto.Password);

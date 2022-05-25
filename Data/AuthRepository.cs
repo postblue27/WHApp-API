@@ -28,7 +28,7 @@ namespace WHApp_API.Data
             user.PasswordSalt = passwordSalt;
             
             var userTypeFullName = Extensions.GetUserTypeFullName(typeof(Renter).Namespace, userForRegisterDto.UserType);
-            var typedUser = Extensions.GetTypedUserInstance(userForRegisterDto, userTypeFullName);
+            var typedUser = Extensions.GetTypedUserInstance(user, userTypeFullName);
             _context.Add(typedUser);
             await _context.SaveChangesAsync();
             return Task.FromResult(typedUser);
@@ -45,6 +45,7 @@ namespace WHApp_API.Data
 
         public async Task<bool> UserExists(string username, string userType)
         {
+            
             switch(userType)
             {
                 case UserTypes.Renter:
