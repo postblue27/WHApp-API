@@ -50,39 +50,18 @@ namespace WHApp_API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            userForLoginDto.Username = userForLoginDto.Username.ToLower();
-
-            var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.UserType, userForLoginDto.Password);
-
-            if (userFromRepo == null)
-                return Unauthorized();
-
-            var claims = new List<Claim>
+            try
             {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Username),
-                new Claim(ClaimTypes.Role, userForLoginDto.UserType)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+                var token = await _repo.LoginAsync(userForLoginDto.Username, userForLoginDto.UserType, userForLoginDto.Password);
+                return Ok(new
+                {
+                    token = token
+                });
+            }
+            catch(Exception ex)
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return Ok(new
-            {
-                token = tokenHandler.WriteToken(token)
-            });
+                return Unauthorized(ex.Message);
+            }
         }
     }
 }

@@ -1,21 +1,30 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WHApp_API.Dtos;
 using WHApp_API.Helpers.CustomExceptions;
 using WHApp_API.Interfaces;
 using WHApp_API.Models;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace WHApp_API.Data
 {
     public class AuthRepository : IAuthRepository
     {
         private readonly DataContext _context;
-        public AuthRepository(DataContext context)
+        private readonly IConfiguration _config;
+
+        public AuthRepository(DataContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
         public async Task<User> RegisterAsync(UserForRegisterDto userForRegisterDto)
@@ -54,17 +63,39 @@ namespace WHApp_API.Data
                 return true;
             return false;
         }
-        public async Task<User> Login(string username, string userType, string password)
+        public async Task<string> LoginAsync(string username, string userType, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(r => r.Username == username);
-            Console.WriteLine(user.GetType());
+            var user = await _context.Users.FirstOrDefaultAsync(r => r.Username.ToLower() == username.ToLower());
             if(user == null)
-                return null;
+                throw new Exception("User with this username is not found.");
 
             if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                return null;
+                throw new Exception("Wrong password.");
 
-            return user;
+            // return user;
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.UserType)
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
         }
 
         public bool VerifyPasswordHash(string password, byte[] PasswordHash, byte[] PasswordSalt)
