@@ -7,7 +7,7 @@ namespace WHApp_API.Models
         public string Description { get; set; }
         public string ProductCode { get; set; }
         public int Volume { get; set; }
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public Renter Renter { get; set; }
         public ProductShipping ProductShipping { get; set; }
         public ProductInWarehouse ProductInWarehouse { get; set; }
@@ -18,16 +18,16 @@ namespace WHApp_API.Models
             this.Description = product.Description;
             this.ProductCode = product.ProductCode;
             this.Volume = product.Volume;
-            this.UserId = product.UserId;
+            this.Id = product.Id;
         }
         public Product(string ProductName, string Description,
-                string ProductCode, int Volume, int UserId)
+                string ProductCode, int Volume, int Id)
         {
             this.ProductName = ProductName;
             this.Description = Description;
             this.ProductCode = ProductCode;
             this.Volume = Volume;
-            this.UserId = UserId;
+            this.Id = Id;
         }
     }
 }

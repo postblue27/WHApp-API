@@ -18,7 +18,7 @@ namespace WHApp_API.Data
         public async Task<RenterWarehouse> GetRenterWarehouse(int renterId, int warehouseId)
         {
             var renterWarehouse = await _context.RenterWarehouses//.Include(rw => rw.Renter).Include(rw => rw.Warehouse)
-                .FirstOrDefaultAsync(rw => rw.UserId == renterId && rw.WarehouseId == warehouseId);
+                .FirstOrDefaultAsync(rw => rw.Id == renterId && rw.WarehouseId == warehouseId);
 
             return renterWarehouse;
         }

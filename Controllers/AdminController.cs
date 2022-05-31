@@ -18,33 +18,37 @@ namespace WHApp_API.Controllers
             _adminrepo = adminrepo;
             _apprepo = apprepo;
         }
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpGet("get-users/{userType}")]
-        public async Task<IActionResult> GetUsers(string userType)
+        public async Task<IActionResult> GetUsersByUserType(string userType)
         {
-            switch(userType)
-            {
-                case UserTypes.Renter:
-                    var rentersList = await _adminrepo.GetRenters();
-                    if(rentersList == null)
-                        return BadRequest("No renters yet");
-                    return Ok(rentersList);
-                case UserTypes.Owner:
-                    var ownersList = await _adminrepo.GetOwners();
-                    if(ownersList == null)
-                        return BadRequest("No owners yet");
-                    return Ok(ownersList);
-                case UserTypes.Driver:
-                    var driversList = await _adminrepo.GetDrivers();
-                    if(driversList == null)
-                        return BadRequest("No drivers yet");
-                    return Ok(driversList);
-                case UserTypes.Admin:
-                    var adminsList = await _adminrepo.GetAdmins();
-                    if(adminsList == null)
-                        return BadRequest("No admins yet");
-                    return Ok(adminsList);
-            }
+            var usersList = await _adminrepo.GetUsersByUserTypeAsync(userType);
+            if(usersList == null)
+                return BadRequest($"No {userType}s yet.");
+            return Ok(usersList);
+            // switch(userType)
+            // {
+            //     case UserTypes.Renter:
+            //         var rentersList = await _adminrepo.GetRenters();
+            //         if(rentersList == null)
+            //             return BadRequest("No renters yet");
+            //         return Ok(rentersList);
+            //     case UserTypes.Owner:
+            //         var ownersList = await _adminrepo.GetOwners();
+            //         if(ownersList == null)
+            //             return BadRequest("No owners yet");
+            //         return Ok(ownersList);
+            //     case UserTypes.Driver:
+            //         var driversList = await _adminrepo.GetDrivers();
+            //         if(driversList == null)
+            //             return BadRequest("No drivers yet");
+            //         return Ok(driversList);
+            //     case UserTypes.Admin:
+            //         var adminsList = await _adminrepo.GetAdmins();
+            //         if(adminsList == null)
+            //             return BadRequest("No admins yet");
+            //         return Ok(adminsList);
+            // }
             return BadRequest("Error getting " + userType + "s");
         }
         [Authorize(Roles = "Admin")]
@@ -57,7 +61,7 @@ namespace WHApp_API.Controllers
                 case UserTypes.Renter:
                     Renter updatedRenter = new Renter
                     {
-                        UserId = userForUpdate.UserId,
+                        Id = userForUpdate.Id,
                         Username = userForUpdate.Username,
                         Email = userForUpdate.Email
                     };
@@ -69,7 +73,7 @@ namespace WHApp_API.Controllers
                 case UserTypes.Owner:
                     Owner updatedOwner = new Owner
                     {
-                        UserId = userForUpdate.UserId,
+                        Id = userForUpdate.Id,
                         Username = userForUpdate.Username,
                         Email = userForUpdate.Email
                     };
@@ -81,7 +85,7 @@ namespace WHApp_API.Controllers
                 case UserTypes.Driver:
                     Driver updatedDriver = new Driver
                     {
-                        UserId = userForUpdate.UserId,
+                        Id = userForUpdate.Id,
                         Username = userForUpdate.Username,
                         Email = userForUpdate.Email
                     };
@@ -93,7 +97,7 @@ namespace WHApp_API.Controllers
                 case UserTypes.Admin:
                     Admin updatedAdmin = new Admin
                     {
-                        UserId = userForUpdate.UserId,
+                        Id = userForUpdate.Id,
                         Username = userForUpdate.Username,
                         Email = userForUpdate.Email
                     };
@@ -106,14 +110,14 @@ namespace WHApp_API.Controllers
             return BadRequest("Error updating user");
         }
         [Authorize(Roles = "Admin")]
-        [HttpDelete("delete-user/{userType}/{userId}")]
-        public async Task<IActionResult> DeleteUser(string userType, int userId)
+        [HttpDelete("delete-user/{userType}/{Id}")]
+        public async Task<IActionResult> DeleteUser(string userType, int Id)
         {
             switch(userType)
             {
                 case UserTypes.Renter:
                     var renterToDelete = new Renter {
-                        UserId = userId
+                        Id = Id
                     };
                     _apprepo.Delete(renterToDelete);
                     if (await _apprepo.SaveAll())
@@ -123,7 +127,7 @@ namespace WHApp_API.Controllers
                     return BadRequest("Problem deleting user");
                 case UserTypes.Owner:
                     var ownerToDelete = new Owner {
-                        UserId = userId
+                        Id = Id
                     };
                     _apprepo.Delete(ownerToDelete);
                     if (await _apprepo.SaveAll())
@@ -133,7 +137,7 @@ namespace WHApp_API.Controllers
                     return BadRequest("Problem deleting user");
                 case UserTypes.Driver:
                     var driverToDelete = new Driver {
-                        UserId = userId
+                        Id = Id
                     };
                     _apprepo.Delete(driverToDelete);
                     if (await _apprepo.SaveAll())
@@ -143,7 +147,7 @@ namespace WHApp_API.Controllers
                     return BadRequest("Problem deleting user");
                 case UserTypes.Admin:
                     var adminToDelete = new Admin {
-                        UserId = userId
+                        Id = Id
                     };
                     _apprepo.Delete(adminToDelete);
                     if (await _apprepo.SaveAll())

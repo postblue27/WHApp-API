@@ -11,7 +11,7 @@ namespace WHApp_API.Interfaces
 
         void Update<T>(T entity) where T : class;
         Task<bool> SaveAll();
-        Task<bool> UserExistsById(int UserId, string UserType);
+        Task<bool> UserExistsById(int Id, string UserType);
         
     }
 }

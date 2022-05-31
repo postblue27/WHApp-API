@@ -6,28 +6,31 @@ namespace WHApp_API.Data
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options){ }
-        public DbSet<Owner> Owners { get; set; }
-        public DbSet<Renter> Renters { get; set; }
+        public DbSet<User> Users { get; set; }
+        // public DbSet<Owner> Owners { get; set; }
+        // public DbSet<Renter> Renters { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<RenterWarehouse> RenterWarehouses { get; set; }
         public DbSet<Zone> Zones { get; set; }
-        public DbSet<Driver> Drivers { get; set; }
+        // public DbSet<Driver> Drivers { get; set; }
         public DbSet<Car> Cars { get; set; }
-        public DbSet<Admin> Admins { get; set; }
+        // public DbSet<Admin> Admins { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductShipping> ProductsForShipping { get; set; }
         public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+                .HasDiscriminator(u => u.UserType);
             // //users and warehouse relations
             // modelBuilder.Entity<Owner>()
-            //     .HasKey(o => o.UserId);
+            //     .HasKey(o => o.Id);
             // modelBuilder.Entity<Renter>()
-            //     .HasKey(r => r.UserId);
+            //     .HasKey(r => r.Id);
             // modelBuilder.Entity<Driver>()
-            //     .HasKey(d => d.UserId);
+            //     .HasKey(d => d.Id);
             // modelBuilder.Entity<Admin>()
-            //     .HasKey(a => a.UserId);
+            //     .HasKey(a => a.Id);
 
             // modelBuilder.Entity<Owner>()
             //     .HasMany(o => o.Warehouses)
@@ -38,7 +41,7 @@ namespace WHApp_API.Data
             //     .HasMany(r => r.RenterWarehouses)
             //     .WithOne(rw => rw.Renter)
             //     // .HasForeignKey(rw => rw.RenterId)
-            //     .HasForeignKey(rw => rw.UserId)
+            //     .HasForeignKey(rw => rw.Id)
             //     .OnDelete(DeleteBehavior.Cascade);
             // modelBuilder.Entity<Warehouse>()
             //     .HasMany(w => w.RenterWarehouses)
@@ -55,7 +58,7 @@ namespace WHApp_API.Data
             // modelBuilder.Entity<Renter>()
             //     .HasMany(r => r.Products)
             //     .WithOne(p => p.Renter)
-            //     .HasForeignKey(p => p.UserId)
+            //     .HasForeignKey(p => p.Id)
             //     .OnDelete(DeleteBehavior.Cascade);
 
             // //car and product relations
@@ -90,11 +93,11 @@ namespace WHApp_API.Data
             //     .OnDelete(DeleteBehavior.Cascade);
             
             // //product and zone relations
-            // modelBuilder.Entity<Zone>()
-            //     .HasMany(z => z.ProductsInWarehouse)
-            //     .WithOne(piw => piw.Zone)
-            //     .HasForeignKey(piw => piw.ZoneId)
-            //     .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Zone>()
+                .HasMany(z => z.ProductsInWarehouse)
+                .WithOne(piw => piw.Zone)
+                .HasForeignKey(piw => piw.ZoneId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // //product for shipping relations
             // modelBuilder.Entity<ProductInWarehouse>()

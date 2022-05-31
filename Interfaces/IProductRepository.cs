@@ -7,7 +7,7 @@ namespace WHApp_API.Interfaces
     public interface IProductRepository
     {
     //     Task<Product> AddProduct(string ProductName, string Description,
-    //             string ProductCode, int Volume, int UserId);
+    //             string ProductCode, int Volume, int Id);
         Task<Product> AddProduct(Product product);
         Task<bool> ProductInWarehouseExists(int piwId);
         Task<List<ProductInWarehouse>> GetProductsInWarehouse(int warehouseId);

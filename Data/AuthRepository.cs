@@ -52,45 +52,45 @@ namespace WHApp_API.Data
         {
             var userTypeFullName = Extensions.GetTypeFullName(typeof(Renter).Namespace, userType);
             // _context.FindAsync
-            switch(userType)
-            {
-                case UserTypes.Renter:
-                    if(await _context.Renters.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-                        return true;
-                        break;
-                case UserTypes.Owner:
-                    if(await _context.Owners.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-                        return true;
-                        break;
-                case UserTypes.Driver:
-                    if(await _context.Drivers.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-                        return true;
-                        break;
-                case UserTypes.Admin:
-                    if(await _context.Admins.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-                        return true;
-                        break;
-            }
+            // switch(userType)
+            // {
+            //     case UserTypes.Renter:
+            //         if(await _context.Renters.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
+            //             return true;
+            //             break;
+            //     case UserTypes.Owner:
+            //         if(await _context.Owners.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
+            //             return true;
+            //             break;
+            //     case UserTypes.Driver:
+            //         if(await _context.Drivers.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
+            //             return true;
+            //             break;
+            //     case UserTypes.Admin:
+            //         if(await _context.Admins.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
+            //             return true;
+            //             break;
+            // }
             return false;
         }
         public async Task<User> Login(string username, string userType, string password)
         {
             var user = new User();
-            switch(userType)
-            {
-                case UserTypes.Renter:
-                    user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
-                        break;
-                case UserTypes.Owner:
-                    user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
-                        break;
-                case UserTypes.Driver:
-                    user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
-                        break;
-                case UserTypes.Admin:
-                    user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
-                        break;
-            }
+            // switch(userType)
+            // {
+            //     case UserTypes.Renter:
+            //         user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
+            //             break;
+            //     case UserTypes.Owner:
+            //         user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
+            //             break;
+            //     case UserTypes.Driver:
+            //         user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
+            //             break;
+            //     case UserTypes.Admin:
+            //         user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
+            //             break;
+            // }
 
             if(user == null)
                 return null;
@@ -119,21 +119,21 @@ namespace WHApp_API.Data
         public async Task<User> GetUser(string username, string userType)
         {
             var user = new User();
-            switch(userType)
-            {
-                case UserTypes.Renter:
-                    user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
-                        break;
-                case UserTypes.Owner:
-                    user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
-                        break;
-                case UserTypes.Driver:
-                    user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
-                        break;
-                case UserTypes.Admin:
-                    user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
-                        break;
-            }
+            // switch(userType)
+            // {
+            //     case UserTypes.Renter:
+            //         user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
+            //             break;
+            //     case UserTypes.Owner:
+            //         user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
+            //             break;
+            //     case UserTypes.Driver:
+            //         user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
+            //             break;
+            //     case UserTypes.Admin:
+            //         user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
+            //             break;
+            // }
 
             if(user == null)
                 return null;

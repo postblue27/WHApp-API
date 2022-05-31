@@ -65,11 +65,11 @@ namespace WHApp_API.Controllers
         [HttpPost("rent-warehouse")]
         public async Task<IActionResult> RentWarehouse(RenterWarehouse renterWarehouse)
         {
-            if(!await _apprepo.UserExistsById(renterWarehouse.UserId, UserTypes.Renter))
+            if(!await _apprepo.UserExistsById(renterWarehouse.Id, UserTypes.Renter))
                 return BadRequest("User does not exist");
             _apprepo.Add(renterWarehouse);
             if (await _apprepo.SaveAll()){
-                var created = await _warehouserepo.GetRenterWarehouse(renterWarehouse.UserId, renterWarehouse.WarehouseId);
+                var created = await _warehouserepo.GetRenterWarehouse(renterWarehouse.Id, renterWarehouse.WarehouseId);
                 return Ok(created);
             }
             return BadRequest("Problem renting warehouse");

@@ -15,33 +15,9 @@ namespace WHApp_API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("WHApp_API.Models.Admin", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("WHApp_API.Models.Car", b =>
                 {
@@ -66,57 +42,9 @@ namespace WHApp_API.Migrations
                     b.ToTable("Cars");
                 });
 
-            modelBuilder.Entity("WHApp_API.Models.Driver", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Drivers");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.Owner", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Owners");
-                });
-
             modelBuilder.Entity("WHApp_API.Models.Product", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -127,18 +55,21 @@ namespace WHApp_API.Migrations
                     b.Property<string>("ProductCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("RenterId")
                         .HasColumnType("int");
 
                     b.Property<int>("Volume")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RenterId");
 
                     b.ToTable("Products");
                 });
@@ -218,9 +149,34 @@ namespace WHApp_API.Migrations
                     b.ToTable("ProductsForShipping");
                 });
 
-            modelBuilder.Entity("WHApp_API.Models.Renter", b =>
+            modelBuilder.Entity("WHApp_API.Models.RenterWarehouse", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("RenterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RenterWarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RenterId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("RenterWarehouses");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.User", b =>
+                {
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -234,34 +190,18 @@ namespace WHApp_API.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
-                    b.ToTable("Renters");
-                });
+                    b.ToTable("Users");
 
-            modelBuilder.Entity("WHApp_API.Models.RenterWarehouse", b =>
-                {
-                    b.Property<int>("RenterWarehouseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RenterWarehouseId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("RenterWarehouses");
+                    b.HasDiscriminator<string>("UserType").HasValue("User");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Warehouse", b =>
@@ -313,6 +253,27 @@ namespace WHApp_API.Migrations
                     b.ToTable("Zones");
                 });
 
+            modelBuilder.Entity("WHApp_API.Models.Driver", b =>
+                {
+                    b.HasBaseType("WHApp_API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Driver");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Owner", b =>
+                {
+                    b.HasBaseType("WHApp_API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Owner");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Renter", b =>
+                {
+                    b.HasBaseType("WHApp_API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Renter");
+                });
+
             modelBuilder.Entity("WHApp_API.Models.Car", b =>
                 {
                     b.HasOne("WHApp_API.Models.Driver", "Driver")
@@ -320,15 +281,17 @@ namespace WHApp_API.Migrations
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Driver");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Product", b =>
                 {
                     b.HasOne("WHApp_API.Models.Renter", "Renter")
                         .WithMany("Products")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RenterId");
+
+                    b.Navigation("Renter");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.ProductForShipping", b =>
@@ -338,6 +301,8 @@ namespace WHApp_API.Migrations
                         .HasForeignKey("WHApp_API.Models.ProductForShipping", "ProductInWarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ProductInWarehouse");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.ProductInWarehouse", b =>
@@ -359,6 +324,12 @@ namespace WHApp_API.Migrations
                         .HasForeignKey("ZoneId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Warehouse");
+
+                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.ProductShipping", b =>
@@ -366,7 +337,7 @@ namespace WHApp_API.Migrations
                     b.HasOne("WHApp_API.Models.Car", "Car")
                         .WithMany("ProductsForShipping")
                         .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WHApp_API.Models.Product", "Product")
@@ -374,21 +345,27 @@ namespace WHApp_API.Migrations
                         .HasForeignKey("WHApp_API.Models.ProductShipping", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Car");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.RenterWarehouse", b =>
                 {
                     b.HasOne("WHApp_API.Models.Renter", "Renter")
                         .WithMany("RenterWarehouses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RenterId");
 
                     b.HasOne("WHApp_API.Models.Warehouse", "Warehouse")
                         .WithMany("RenterWarehouses")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Renter");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Warehouse", b =>
@@ -398,6 +375,8 @@ namespace WHApp_API.Migrations
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Zone", b =>
@@ -407,6 +386,56 @@ namespace WHApp_API.Migrations
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Car", b =>
+                {
+                    b.Navigation("ProductsForShipping");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Product", b =>
+                {
+                    b.Navigation("ProductInWarehouse");
+
+                    b.Navigation("ProductShipping");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.ProductInWarehouse", b =>
+                {
+                    b.Navigation("ProductForShipping");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Warehouse", b =>
+                {
+                    b.Navigation("ProductsInWarehouse");
+
+                    b.Navigation("RenterWarehouses");
+
+                    b.Navigation("Zones");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Zone", b =>
+                {
+                    b.Navigation("ProductsInWarehouse");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Driver", b =>
+                {
+                    b.Navigation("Cars");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Owner", b =>
+                {
+                    b.Navigation("Warehouses");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Renter", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("RenterWarehouses");
                 });
 #pragma warning restore 612, 618
         }
