@@ -18,9 +18,9 @@ namespace WHApp_API.Data
             _context = context;
         }
 
-        public async Task<object> Register(UserForRegisterDto userForRegisterDto)
+        public async Task<User> RegisterAsync(UserForRegisterDto userForRegisterDto)
         {
-            if(await UserExistsAsync(userForRegisterDto.Username, userForRegisterDto.UserType))
+            if(await UserExistsAsync(userForRegisterDto.Username))
             {
                 throw new UserExistsException();
             }
@@ -32,11 +32,11 @@ namespace WHApp_API.Data
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
             
-            var userTypeFullName = Extensions.GetTypeFullName(typeof(Renter).Namespace, userForRegisterDto.UserType);
+            var userTypeFullName = Extensions.GetTypeByFullName(typeof(Renter).Namespace, userForRegisterDto.UserType);
             var typedUser = Extensions.GetTypedUserInstance(user, userTypeFullName);
             _context.Add(typedUser);
             await _context.SaveChangesAsync();
-            return Task.FromResult(typedUser);
+            return typedUser;
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -48,50 +48,16 @@ namespace WHApp_API.Data
             }
         }
 
-        public async Task<bool> UserExistsAsync(string username, string userType)
+        public async Task<bool> UserExistsAsync(string username)
         {
-            var userTypeFullName = Extensions.GetTypeFullName(typeof(Renter).Namespace, userType);
-            // _context.FindAsync
-            // switch(userType)
-            // {
-            //     case UserTypes.Renter:
-            //         if(await _context.Renters.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-            //             return true;
-            //             break;
-            //     case UserTypes.Owner:
-            //         if(await _context.Owners.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-            //             return true;
-            //             break;
-            //     case UserTypes.Driver:
-            //         if(await _context.Drivers.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-            //             return true;
-            //             break;
-            //     case UserTypes.Admin:
-            //         if(await _context.Admins.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
-            //             return true;
-            //             break;
-            // }
+            if(await _context.Users.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
+                return true;
             return false;
         }
         public async Task<User> Login(string username, string userType, string password)
         {
-            var user = new User();
-            // switch(userType)
-            // {
-            //     case UserTypes.Renter:
-            //         user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
-            //             break;
-            //     case UserTypes.Owner:
-            //         user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
-            //             break;
-            //     case UserTypes.Driver:
-            //         user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
-            //             break;
-            //     case UserTypes.Admin:
-            //         user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
-            //             break;
-            // }
-
+            var user = await _context.Users.FirstOrDefaultAsync(r => r.Username == username);
+            Console.WriteLine(user.GetType());
             if(user == null)
                 return null;
 

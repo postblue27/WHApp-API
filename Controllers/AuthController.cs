@@ -29,8 +29,8 @@ namespace WHApp_API.Controllers
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
             try{
-                var createdUser = await _repo.Register(userForRegisterDto);
-                return Ok(createdUser);
+                var createdUser = await _repo.RegisterAsync(userForRegisterDto);
+                return Ok($"{createdUser.UserType} successfully created.");
             }
             catch(Exception ex)
             {

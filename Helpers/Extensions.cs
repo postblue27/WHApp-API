@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WHApp_API.Models;
 
 namespace WHApp_API.Data
 {
@@ -36,13 +37,13 @@ namespace WHApp_API.Data
                 }
             }
         }
-        public static Type GetTypeFullName(string namespaceName, string typeName)
+        public static Type GetTypeByFullName(string namespaceName, string typeName)
         {
             return Assembly.GetExecutingAssembly().GetType($"{namespaceName}.{typeName}", true);
         }
-        public static object GetTypedUserInstance(object userDataToMap, Type userType)
+        public static User GetTypedUserInstance(object userDataToMap, Type userType)
         {
-            object typedUser = Activator.CreateInstance(userType);
+            User typedUser = Activator.CreateInstance(userType) as User;
             Extensions.MapProperties(userDataToMap, typedUser);
             return typedUser;
         }
