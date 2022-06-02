@@ -115,22 +115,7 @@ namespace WHApp_API.Data
 
         public async Task<User> GetUser(string username, string userType)
         {
-            var user = new User();
-            // switch(userType)
-            // {
-            //     case UserTypes.Renter:
-            //         user = await _context.Renters.FirstOrDefaultAsync(r => r.Username == username);
-            //             break;
-            //     case UserTypes.Owner:
-            //         user = await _context.Owners.FirstOrDefaultAsync(o => o.Username == username);
-            //             break;
-            //     case UserTypes.Driver:
-            //         user = await _context.Drivers.FirstOrDefaultAsync(o => o.Username == username);
-            //             break;
-            //     case UserTypes.Admin:
-            //         user = await _context.Admins.FirstOrDefaultAsync(o => o.Username == username);
-            //             break;
-            // }
+            var user = await _context.Users.FirstOrDefaultAsync(r => r.Username.ToLower() == username.ToLower());
 
             if(user == null)
                 return null;

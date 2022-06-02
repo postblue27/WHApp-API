@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -22,34 +23,18 @@ namespace WHApp_API.Controllers
         [HttpGet("get-users/{userType}")]
         public async Task<IActionResult> GetUsersByUserType(string userType)
         {
-            var usersList = await _adminrepo.GetUsersByUserTypeAsync(userType);
-            if(usersList == null)
-                return BadRequest($"No {userType}s yet.");
-            return Ok(usersList);
-            // switch(userType)
-            // {
-            //     case UserTypes.Renter:
-            //         var rentersList = await _adminrepo.GetRenters();
-            //         if(rentersList == null)
-            //             return BadRequest("No renters yet");
-            //         return Ok(rentersList);
-            //     case UserTypes.Owner:
-            //         var ownersList = await _adminrepo.GetOwners();
-            //         if(ownersList == null)
-            //             return BadRequest("No owners yet");
-            //         return Ok(ownersList);
-            //     case UserTypes.Driver:
-            //         var driversList = await _adminrepo.GetDrivers();
-            //         if(driversList == null)
-            //             return BadRequest("No drivers yet");
-            //         return Ok(driversList);
-            //     case UserTypes.Admin:
-            //         var adminsList = await _adminrepo.GetAdmins();
-            //         if(adminsList == null)
-            //             return BadRequest("No admins yet");
-            //         return Ok(adminsList);
-            // }
-            return BadRequest("Error getting " + userType + "s");
+            try
+            {
+                var usersList = await _adminrepo.GetUsersByUserType(userType);
+                if(usersList == null)
+                    return BadRequest($"No {userType}s yet.");
+                return Ok(usersList);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest($"Error getting {userType}s\nError message: {ex.Message}");
+            }    
+            
         }
         [Authorize(Roles = "Admin")]
         [HttpPost("update-user/{userType}")]

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WHApp_API.Interfaces;
@@ -27,6 +29,20 @@ namespace WHApp_API.Data
         public void Update<T>(T entity) where T : class
         {
             _context.Update(entity);
+        }
+        public async Task<T> GetByIdAsync<T>(int id) where T : class
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<IEnumerable<T>> GetAsync<T>() where T : class
+        {
+            return await _context.Set<T>().ToListAsync();
+        }
+        //TODO: Debug method. Not working in admin repository.
+        public IEnumerable<T> Get<T>(Func<T, bool> predicate) where T : class
+        {
+            return _context.Set<T>().Where(predicate).ToList();
         }
 
         public async Task<bool> SaveAll()

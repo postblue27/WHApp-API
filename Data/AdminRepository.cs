@@ -11,50 +11,17 @@ namespace WHApp_API.Data
     public class AdminRepository : IAdminRepository
     {
         private readonly DataContext _context;
-        public AdminRepository(DataContext context)
+        private readonly IAppRepository _apprepo;
+        public AdminRepository(DataContext context, IAppRepository apprepo)
         {
             _context = context;
+            _apprepo = apprepo;
 
         }
-        // public async Task<List<Owner>> GetOwners()
-        // {
-        //     return await _context.Owners.ToListAsync();
-        // }
-        // public async Task<List<Renter>> GetRenters()
-        // {
-        //     return await _context.Renters.ToListAsync();
-        // }
-        // public async Task<List<Driver>> GetDrivers()
-        // {
-        //     return await _context.Drivers.ToListAsync();
-        // }
-        // public async Task<List<Admin>> GetAdmins()
-        // {
-        //     return await _context.Admins.ToListAsync();
-        // }
-        public async Task<List<User>> GetUsersByUserTypeAsync(string userTypeString)
+        public async Task<IEnumerable<User>> GetUsersByUserType(string userTypeString)
         {
-            return await _context.Users.Where(u => u.UserType == userTypeString).ToListAsync();
+            // return _apprepo.Get<User>(u => u.UserType == userTypeString);
+            return await _apprepo.GetAsync<User>();
         }
-
-
-
-
-        // public async Task<Owner> GetOwnerById(int Id)
-        // {
-        //     return await _context.Owners.FirstOrDefaultAsync(u => u.Id == Id);
-        // }
-        // public async Task<Renter> GetRenterById(int Id)
-        // {
-        //     return await _context.Renters.FirstOrDefaultAsync(u => u.Id == Id);
-        // }
-        // public async Task<Driver> GetDriverById(int Id)
-        // {
-        //     return await _context.Drivers.FirstOrDefaultAsync(u => u.Id == Id);
-        // }
-        // public async Task<Admin> GetAdminById(int Id)
-        // {
-        //     return await _context.Admins.FirstOrDefaultAsync(u => u.Id == Id);
-        // }
     }
 }
