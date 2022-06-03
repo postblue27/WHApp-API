@@ -10,8 +10,8 @@ using WHApp_API.Data;
 namespace WHApp_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220603105332_initial")]
-    partial class initial
+    [Migration("20220603160639_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -253,6 +253,16 @@ namespace WHApp_API.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("Zones");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.Admin", b =>
+                {
+                    b.HasBaseType("WHApp_API.Models.User");
+
+                    b.Property<int>("AdminIdd")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("Admin");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Driver", b =>

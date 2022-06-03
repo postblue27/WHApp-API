@@ -253,6 +253,16 @@ namespace WHApp_API.Migrations
                     b.ToTable("Zones");
                 });
 
+            modelBuilder.Entity("WHApp_API.Models.Admin", b =>
+                {
+                    b.HasBaseType("WHApp_API.Models.User");
+
+                    b.Property<int>("AdminIdd")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("Admin");
+                });
+
             modelBuilder.Entity("WHApp_API.Models.Driver", b =>
                 {
                     b.HasBaseType("WHApp_API.Models.User");

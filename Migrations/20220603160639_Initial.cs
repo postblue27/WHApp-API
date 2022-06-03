@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WHApp_API.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,7 +17,8 @@ namespace WHApp_API.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    AdminIdd = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

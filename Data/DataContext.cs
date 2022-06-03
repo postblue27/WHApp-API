@@ -7,14 +7,14 @@ namespace WHApp_API.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options){ }
         public DbSet<User> Users { get; set; }
-        // public DbSet<Owner> Owners { get; set; }
-        // public DbSet<Renter> Renters { get; set; }
+        public DbSet<Owner> Owners { get; set; }
+        public DbSet<Renter> Renters { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<RenterWarehouse> RenterWarehouses { get; set; }
         public DbSet<Zone> Zones { get; set; }
-        // public DbSet<Driver> Drivers { get; set; }
         public DbSet<Car> Cars { get; set; }
-        // public DbSet<Admin> Admins { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductShipping> ProductsForShipping { get; set; }
         public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
