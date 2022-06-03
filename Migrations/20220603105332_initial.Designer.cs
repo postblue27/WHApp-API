@@ -10,8 +10,8 @@ using WHApp_API.Data;
 namespace WHApp_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220527024356_Initial")]
-    partial class Initial
+    [Migration("20220603105332_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
