@@ -25,7 +25,7 @@ namespace WHApp_API.Data
         {
             _context.Remove(entity);
         }
-
+        //TODO: Add check for nulls or consider using full model here.
         public void Update<T>(T entity) where T : class
         {
             _context.Update(entity);
@@ -39,7 +39,6 @@ namespace WHApp_API.Data
         {
             return await _context.Set<T>().ToListAsync();
         }
-        //TODO: Debug method. Not working in admin repository.
         public IEnumerable<T> Get<T>(Func<T, bool> predicate) where T : class
         {
             return _context.Set<T>().Where(predicate).ToList();

@@ -19,13 +19,29 @@ namespace WHApp_API.Controllers
             _adminrepo = adminrepo;
             _apprepo = apprepo;
         }
-        // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("get-users")]
+        public async Task<IActionResult> GetUsersByUserType()
+        {
+            try
+            {
+                var usersList = await _apprepo.GetAsync<User>();
+                if(usersList == null)
+                    return BadRequest($"No users yet.");
+                return Ok(usersList);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest($"Error getting users\nError message: {ex.Message}");
+            }    
+        }
+        [Authorize(Roles = "Admin")]
         [HttpGet("get-users/{userType}")]
         public async Task<IActionResult> GetUsersByUserType(string userType)
         {
             try
             {
-                var usersList = await _adminrepo.GetUsersByUserType(userType);
+                var usersList = _adminrepo.GetUsersByUserType(userType);
                 if(usersList == null)
                     return BadRequest($"No {userType}s yet.");
                 return Ok(usersList);
@@ -34,65 +50,16 @@ namespace WHApp_API.Controllers
             {
                 return BadRequest($"Error getting {userType}s\nError message: {ex.Message}");
             }    
-            
         }
         [Authorize(Roles = "Admin")]
-        [HttpPost("update-user/{userType}")]
-        public async Task<IActionResult> UpdateUser(string userType, [FromBody]User userForUpdate)
+        [HttpPost("update-user")]
+        public async Task<IActionResult> UpdateUser([FromBody]User userForUpdate)
         {
-            var a = 10;
-            switch(userType)
-            {
-                case UserTypes.Renter:
-                    Renter updatedRenter = new Renter
-                    {
-                        Id = userForUpdate.Id,
-                        Username = userForUpdate.Username,
-                        Email = userForUpdate.Email
-                    };
-                    _apprepo.Update(updatedRenter);
-                    if(await _apprepo.SaveAll()){
-                        return Ok(updatedRenter);
-                    }
-                    return BadRequest("Problem updating user");
-                case UserTypes.Owner:
-                    Owner updatedOwner = new Owner
-                    {
-                        Id = userForUpdate.Id,
-                        Username = userForUpdate.Username,
-                        Email = userForUpdate.Email
-                    };
-                    _apprepo.Update(updatedOwner);
-                    if(await _apprepo.SaveAll()){
-                        return Ok(updatedOwner);
-                    }
-                    return BadRequest("Problem updating user");
-                case UserTypes.Driver:
-                    Driver updatedDriver = new Driver
-                    {
-                        Id = userForUpdate.Id,
-                        Username = userForUpdate.Username,
-                        Email = userForUpdate.Email
-                    };
-                    _apprepo.Update(updatedDriver);
-                    if(await _apprepo.SaveAll()){
-                        return Ok(updatedDriver);
-                    }
-                    return BadRequest("Problem updating user");
-                case UserTypes.Admin:
-                    Admin updatedAdmin = new Admin
-                    {
-                        Id = userForUpdate.Id,
-                        Username = userForUpdate.Username,
-                        Email = userForUpdate.Email
-                    };
-                    _apprepo.Update(updatedAdmin);
-                    if(await _apprepo.SaveAll()){
-                        return Ok(updatedAdmin);
-                    }
-                    return BadRequest("Problem updating user");
+            _apprepo.Update(userForUpdate);
+            if(await _apprepo.SaveAll()){
+                return Ok("User successfully updated.");
             }
-            return BadRequest("Error updating user");
+            return BadRequest("Problem updating user.");
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete-user/{userType}/{Id}")]

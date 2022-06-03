@@ -18,7 +18,7 @@ namespace WHApp_API.Data
             _apprepo = apprepo;
 
         }
-        public async Task<IEnumerable<User>> GetUsersByUserType(string userTypeString)
+        public IEnumerable<User> GetUsersByUserType(string userTypeString)
         {
             return _apprepo.Get<User>(u => u.UserType == userTypeString);
         }

@@ -72,8 +72,6 @@ namespace WHApp_API.Data
             if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 throw new Exception("Wrong password.");
 
-            // return user;
-
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

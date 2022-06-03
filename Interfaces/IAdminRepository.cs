@@ -7,6 +7,6 @@ namespace WHApp_API.Interfaces
 {
     public interface IAdminRepository
     {
-        Task<IEnumerable<User>> GetUsersByUserType(string userTypeString);
+        IEnumerable<User> GetUsersByUserType(string userTypeString);
     }
 }
