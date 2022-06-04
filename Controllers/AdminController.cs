@@ -62,53 +62,20 @@ namespace WHApp_API.Controllers
             return BadRequest("Problem updating user.");
         }
         [Authorize(Roles = "Admin")]
-        [HttpDelete("delete-user/{userType}/{Id}")]
-        public async Task<IActionResult> DeleteUser(string userType, int Id)
+        [HttpDelete("delete-user/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            switch(userType)
+            var userFromRepo = await _apprepo.GetByIdAsync<User>(id);
+            if(userFromRepo == null)
             {
-                case UserTypes.Renter:
-                    var renterToDelete = new Renter {
-                        Id = Id
-                    };
-                    _apprepo.Delete(renterToDelete);
-                    if (await _apprepo.SaveAll())
-                    {
-                     return Ok(renterToDelete);
-                    }
-                    return BadRequest("Problem deleting user");
-                case UserTypes.Owner:
-                    var ownerToDelete = new Owner {
-                        Id = Id
-                    };
-                    _apprepo.Delete(ownerToDelete);
-                    if (await _apprepo.SaveAll())
-                    {
-                     return Ok(ownerToDelete);
-                    }
-                    return BadRequest("Problem deleting user");
-                case UserTypes.Driver:
-                    var driverToDelete = new Driver {
-                        Id = Id
-                    };
-                    _apprepo.Delete(driverToDelete);
-                    if (await _apprepo.SaveAll())
-                    {
-                     return Ok(driverToDelete);
-                    }
-                    return BadRequest("Problem deleting user");
-                case UserTypes.Admin:
-                    var adminToDelete = new Admin {
-                        Id = Id
-                    };
-                    _apprepo.Delete(adminToDelete);
-                    if (await _apprepo.SaveAll())
-                    {
-                     return Ok(adminToDelete);
-                    }
-                    return BadRequest("Problem deleting user");
+                return BadRequest("User not found");
             }
-            return BadRequest("Error deleting user");
+            _apprepo.Delete(userFromRepo);
+            if (await _apprepo.SaveAll())
+            {
+                return Ok("User successfully deleted.");
+            }
+            return BadRequest("Problem deleting user");
         }
     }
 }
