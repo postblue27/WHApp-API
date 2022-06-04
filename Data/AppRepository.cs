@@ -25,10 +25,13 @@ namespace WHApp_API.Data
         {
             _context.Remove(entity);
         }
-        //TODO: Add check for nulls or consider using full model here.
         public void Update<T>(T entity) where T : class
         {
-            _context.Update(entity);
+            foreach (var property in _context.Entry(entity).Properties)
+            {
+                if(property.CurrentValue != null && !property.Metadata.IsKey())
+                    property.IsModified = true;
+            }
         }
         public async Task<T> GetByIdAsync<T>(int id) where T : class
         {

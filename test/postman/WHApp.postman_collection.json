@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "76d21425-7b5d-4d71-9c46-a388188a5c15",
+		"_postman_id": "cfcea205-c502-4e2e-8b5c-d77e61a755f4",
 		"name": "WHApp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"3\",\r\n    \"username\": \"updated_username\",\r\n    \"email\": \"updated_email\",\r\n    \"userType\": \"Owner\"\r\n}",
+							"raw": "{\r\n    \"id\": \"3\",\r\n    \"username\": \"updated_username\",\r\n    \"email\": \"updated_email\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -35,6 +35,76 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Username\": \"admin\",\r\n    \"UserType\": \"Admin\",\r\n    \"Email\": \"sss\",\r\n    \"Password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/auth/register",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"token\", pm.response.json().token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Username\": \"admin\",\r\n    \"UserType\": \"Admin\",\r\n    \"Email\": \"sss\",\r\n    \"Password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/auth/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -45,7 +115,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"Username\": \"ownerr\",\r\n    \"UserType\": \"Owner\",\r\n    \"Email\": \"sss\",\r\n    \"Password\": \"password\"\r\n}",
+					"raw": "{\r\n    \"Username\": \"owner\",\r\n    \"UserType\": \"Owner\",\r\n    \"Email\": \"sss\",\r\n    \"Password\": \"password\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -134,7 +204,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{server}}/api/admin/delete-user/Renter/1",
+					"raw": "{{server}}/api/admin/delete-user/Owner/1",
 					"host": [
 						"{{server}}"
 					],
@@ -142,7 +212,7 @@
 						"api",
 						"admin",
 						"delete-user",
-						"Renter",
+						"Owner",
 						"1"
 					]
 				}
