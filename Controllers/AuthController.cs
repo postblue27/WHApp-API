@@ -30,7 +30,11 @@ namespace WHApp_API.Controllers
         {
             try{
                 var createdUser = await _repo.RegisterAsync(userForRegisterDto);
-                return Ok($"{createdUser.UserType} successfully created.");
+                return Ok(
+                    new { 
+                        Message = $"{createdUser.UserType} successfully created."
+                    }
+                );
             }
             catch(Exception ex)
             {
