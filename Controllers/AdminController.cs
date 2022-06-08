@@ -57,7 +57,7 @@ namespace WHApp_API.Controllers
         {
             _apprepo.Update(userForUpdate);
             if(await _apprepo.SaveAll()){
-                return Ok("User successfully updated.");
+                return Ok(new { Message = "User successfully updated." });
             }
             return BadRequest("Problem updating user.");
         }
@@ -73,7 +73,7 @@ namespace WHApp_API.Controllers
             _apprepo.Delete(userFromRepo);
             if (await _apprepo.SaveAll())
             {
-                return Ok("User successfully deleted.");
+                return Ok(new { Message = "User successfully deleted." });
             }
             return BadRequest("Problem deleting user");
         }
