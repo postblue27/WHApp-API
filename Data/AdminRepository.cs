@@ -18,7 +18,7 @@ namespace WHApp_API.Data
             _apprepo = apprepo;
 
         }
-        public IEnumerable<User> GetUsersByUserType(string userTypeString)
+        public virtual IEnumerable<User> GetUsersByUserType(string userTypeString)
         {
             return _apprepo.Get<User>(u => u.UserType == userTypeString);
         }
