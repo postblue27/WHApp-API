@@ -14,7 +14,7 @@ namespace WHApp_API.Interfaces
         Task<IEnumerable<T>> GetAsync<T>() where T : class;
         IEnumerable<T> Get<T>(Func<T, bool> predicate) where T : class;
         Task<bool> SaveAll();
-        Task<bool> UserExistsById(int Id, string UserType);
+        Task<bool> UserExistsById(int Id);
         
     }
 }

@@ -31,7 +31,7 @@ namespace WHApp_API.Controllers
         [HttpPost("add-car")]
         public async Task<IActionResult> AddCar(CarToCreateDto carDto)
         {
-            if(!await _apprepo.UserExistsById(carDto.DriverId, UserTypes.Driver))
+            if(!await _apprepo.UserExistsById(carDto.DriverId))
                 return BadRequest("User does not exist");
             var car = _mapper.Map<Car>(carDto);
 

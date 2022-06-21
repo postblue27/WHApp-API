@@ -68,6 +68,8 @@ namespace WHApp_API.Data
             var user = await _context.Users.FirstOrDefaultAsync(r => r.Username.ToLower() == username.ToLower());
             if(user == null)
                 throw new Exception("User with this username is not found.");
+            if(!user.UserType.Equals(userType))
+                throw new Exception("User type mismatch.");
 
             if(!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 throw new Exception("Wrong password.");

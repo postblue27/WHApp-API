@@ -206,7 +206,7 @@ namespace WHApp_API.Migrations
 
             modelBuilder.Entity("WHApp_API.Models.Warehouse", b =>
                 {
-                    b.Property<int>("WarehouseId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -214,16 +214,25 @@ namespace WHApp_API.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Location")
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Latitude")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitude")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WarehouseCode")
-                        .HasColumnType("int");
-
-                    b.HasKey("WarehouseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
@@ -256,9 +265,6 @@ namespace WHApp_API.Migrations
             modelBuilder.Entity("WHApp_API.Models.Admin", b =>
                 {
                     b.HasBaseType("WHApp_API.Models.User");
-
-                    b.Property<int>("AdminIdd")
-                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Admin");
                 });

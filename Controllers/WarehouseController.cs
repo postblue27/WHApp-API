@@ -25,12 +25,22 @@ namespace WHApp_API.Controllers
             _warehouserepo = warehouserepo;
             _authrepo = authrepo;
         }
-        [HttpGet("get-warehouses")]
-        public async Task<IActionResult> GetWarehouses()
+        [HttpGet("get-all-warehouses")]
+        public async Task<IActionResult> GetAllWarehouses()
         {
             var warehouses = await _warehouserepo.GetWarehouses();
             if(warehouses == null)
                 return BadRequest("No warehouses yet");
+
+            return Ok(warehouses); 
+        }
+
+        [HttpGet("get-owner-warehouses/{ownerId}")]
+        public async Task<IActionResult> GetOwnerWarehouses(int ownerId)
+        {
+            var warehouses = await _warehouserepo.GetOwnerWarehouses(ownerId);
+            if(warehouses == null)
+                return BadRequest("Owner has no warehouses yet");
 
             return Ok(warehouses); 
         }
@@ -45,19 +55,14 @@ namespace WHApp_API.Controllers
             return Ok(warehouse);
         }
         [HttpPost("add-warehouse")]
-        public async Task<IActionResult> AddWarehouse(WarehouseForCreateDto warehouseDto)
+        public async Task<IActionResult> AddWarehouse(Warehouse warehouse)
         {
-            if(!await _apprepo.UserExistsById(warehouseDto.OwnerId, UserTypes.Owner))
+            if(!await _apprepo.UserExistsById(warehouse.OwnerId))
                 return BadRequest("User does not exist");
-            var warehouse = _mapper.Map<Warehouse>(warehouseDto);
-
-            if(await _warehouserepo.WarehouseExists(warehouse.WarehouseCode))
-                return BadRequest("Warehouse with this WarehouseCode already exists");
 
             _apprepo.Add(warehouse);
 
             if (await _apprepo.SaveAll()){
-                //return CreatedAtRoute("GetWarehouse", new {id = track.TrackId}, trackForReturn);
                 return Ok(warehouse);
             }
             return BadRequest("Problem adding warehouse");
@@ -65,7 +70,7 @@ namespace WHApp_API.Controllers
         [HttpPost("rent-warehouse")]
         public async Task<IActionResult> RentWarehouse(RenterWarehouse renterWarehouse)
         {
-            if(!await _apprepo.UserExistsById(renterWarehouse.Id, UserTypes.Renter))
+            if(!await _apprepo.UserExistsById(renterWarehouse.Id))
                 return BadRequest("User does not exist");
             _apprepo.Add(renterWarehouse);
             if (await _apprepo.SaveAll()){
@@ -84,14 +89,14 @@ namespace WHApp_API.Controllers
             
             foreach(Zone z in zones.Zones)
             {
-                z.WarehouseId = warehouse.WarehouseId;
+                z.WarehouseId = warehouse.Id;
                 _apprepo.Add(z);
             }
             if(await _apprepo.SaveAll())
             {
                 return Ok((await _warehouserepo.GetWarehouse(warehouseId)));
             }
-            return BadRequest("Problem adding zones to warehouse with id " + warehouse.WarehouseId);
+            return BadRequest("Problem adding zones to warehouse with id " + warehouse.Id);
         }
         [HttpGet("get-zones")]
         public async Task<IActionResult> GetWarehouseZones([FromHeader]int warehouseId)
@@ -102,5 +107,21 @@ namespace WHApp_API.Controllers
                 return BadRequest("No zones for warehouse by this Id");
             return Ok(warehouse.Zones);
         }
+        [HttpDelete("delete-warehouse/{id}")]
+        public async Task<IActionResult> DeleteWarehouse(int id)
+        {
+            var warehouse = await _apprepo.GetByIdAsync<Warehouse>(id);
+            if(warehouse == null)
+            {
+                return BadRequest("Warehouse not found");
+            }
+            _apprepo.Delete(warehouse);
+            if (await _apprepo.SaveAll())
+            {
+                return Ok(new { Message = "Warehouse successfully deleted." });
+            }
+            return BadRequest("Problem deleting Warehouse");
+        }
+
     }
 }

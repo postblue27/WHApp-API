@@ -7,6 +7,7 @@ namespace WHApp_API.Interfaces
     public interface IWarehouseRepository
     {
         Task<List<Warehouse>> GetWarehouses();
+        Task<List<Warehouse>> GetOwnerWarehouses(int ownerId);
         Task<RenterWarehouse> GetRenterWarehouse(int RenterId, int WarehouseId);
         Task<Warehouse> GetWarehouse(int WarehouseId);
         Task<Warehouse> GetWarehouseWithZones(int WarehouseId);

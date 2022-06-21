@@ -52,27 +52,12 @@ namespace WHApp_API.Data
             return await _context.SaveChangesAsync() > 0; // will return true if there is more than 0 changes
         }
 
-        public async Task<bool> UserExistsById(int Id, string userType)
+        public async Task<bool> UserExistsById(int Id)
         {
-            // switch(userType)
-            // {
-            //     case UserTypes.Renter:
-            //         if(await _context.Renters.AnyAsync(u => u.Id == Id))
-            //             return true;
-            //             break;
-            //     case UserTypes.Owner:
-            //         if(await _context.Owners.AnyAsync(u => u.Id == Id))
-            //             return true;
-            //             break;
-            //     case UserTypes.Driver:
-            //         if(await _context.Drivers.AnyAsync(u => u.Id == Id))
-            //             return true;
-            //             break;
-            //     case UserTypes.Admin:
-            //         if(await _context.Admins.AnyAsync(u => u.Id == Id))
-            //             return true;
-            //             break;
-            // }
+            if(await _context.Users.AnyAsync(u => u.Id == Id))
+            {
+                return true;
+            }
             return false;
         }
     }

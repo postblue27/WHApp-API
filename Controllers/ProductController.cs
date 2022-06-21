@@ -33,7 +33,7 @@ namespace WHApp_API.Controllers
             if(warehouse == null)
                 return BadRequest("No warehouse by this Id");
             
-            if(!await _warehouserepo.ZoneExists(warehouse.WarehouseId, productToAddDto.ZoneId))
+            if(!await _warehouserepo.ZoneExists(warehouse.Id, productToAddDto.ZoneId))
                 return BadRequest("Provided zone does not exist in this warehouse");
             //здесь добавить проверку на то, осталось ли достаточно места на складе. 
             //Если да - вернуть зону, в котрую пометсить продукт
@@ -53,7 +53,7 @@ namespace WHApp_API.Controllers
                 return BadRequest("Problem adding product");
             }
 
-            ProductInWarehouse piw = new ProductInWarehouse(warehouse.WarehouseId, productToCreate.ProductId, productToAddDto.ZoneId);
+            ProductInWarehouse piw = new ProductInWarehouse(warehouse.Id, productToCreate.ProductId, productToAddDto.ZoneId);
             _apprepo.Add(piw);
             if(await _apprepo.SaveAll())
             {

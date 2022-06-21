@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WHApp_API.Interfaces;
@@ -15,6 +16,11 @@ namespace WHApp_API.Data
 
         }
 
+        public async Task<List<Warehouse>> GetOwnerWarehouses(int ownerId)
+        {
+            return await _context.Warehouses.Where(w => w.OwnerId == ownerId).ToListAsync();
+        }
+
         public async Task<RenterWarehouse> GetRenterWarehouse(int renterId, int warehouseId)
         {
             var renterWarehouse = await _context.RenterWarehouses//.Include(rw => rw.Renter).Include(rw => rw.Warehouse)
@@ -25,7 +31,7 @@ namespace WHApp_API.Data
 
         public async Task<Warehouse> GetWarehouse(int warehouseId)
         {
-            var warehouse = await _context.Warehouses.FirstOrDefaultAsync(w => w.WarehouseId == warehouseId);
+            var warehouse = await _context.Warehouses.FirstOrDefaultAsync(w => w.Id == warehouseId);
 
             return warehouse;
         }
@@ -39,20 +45,20 @@ namespace WHApp_API.Data
 
         public async Task<Warehouse> GetWarehouseWithZones(int warehouseId)
         {
-            var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.WarehouseId == warehouseId);
+            var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.Id == warehouseId);
                 
             return warehouse;
         }
 
-        public async Task<bool> WarehouseExists(int warehouseCode)
+        public async Task<bool> WarehouseExists(int id)
         {
-            if(await _context.Warehouses.AnyAsync(w => w.WarehouseCode == warehouseCode))
+            if(await _context.Warehouses.AnyAsync(w => w.Id == id))
                 return true;
             return false;
         }
         public async Task<bool> ZoneExists(int warehouseId, int zoneId)
         {
-            var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.WarehouseId == warehouseId);
+            var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.Id == warehouseId);
             foreach(Zone z in warehouse.Zones)
             {
                 if(z.ZoneId == zoneId)
