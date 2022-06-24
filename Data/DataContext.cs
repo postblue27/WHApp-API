@@ -67,18 +67,18 @@ namespace WHApp_API.Data
             //     .WithOne(pfs => pfs.Car)
             //     .HasForeignKey(pfs => pfs.CarId)
             //     .OnDelete(DeleteBehavior.NoAction);
-            // modelBuilder.Entity<Product>()
-            //     .HasOne(p => p.ProductShipping)
-            //     .WithOne(pfs => pfs.Product)
-            //     .HasForeignKey<ProductShipping>(pfs => pfs.ProductId)
-            //     .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.ProductShipping)
+                .WithOne(pfs => pfs.Product)
+                .HasForeignKey<ProductShipping>(pfs => pfs.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
             
             // //warehouse and product relations
-            // modelBuilder.Entity<Warehouse>()
-            //     .HasMany(w => w.ProductsInWarehouse)
-            //     .WithOne(piw => piw.Warehouse)
-            //     .HasForeignKey(piw => piw.WarehouseId)
-            //     .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Warehouse>()
+                .HasMany(w => w.ProductsInWarehouse)
+                .WithOne(piw => piw.Warehouse)
+                .HasForeignKey(piw => piw.WarehouseId)
+                .OnDelete(DeleteBehavior.NoAction);
             // modelBuilder.Entity<Product>()
             //     .HasOne(p => p.ProductInWarehouse)
             //     .WithOne(piw => piw.Product)
@@ -91,13 +91,6 @@ namespace WHApp_API.Data
             //     .WithOne(z => z.Warehouse)
             //     .HasForeignKey(z => z.WarehouseId)
             //     .OnDelete(DeleteBehavior.Cascade);
-            
-            // //product and zone relations
-            modelBuilder.Entity<Zone>()
-                .HasMany(z => z.ProductsInWarehouse)
-                .WithOne(piw => piw.Zone)
-                .HasForeignKey(piw => piw.ZoneId)
-                .OnDelete(DeleteBehavior.NoAction);
 
             // //product for shipping relations
             // modelBuilder.Entity<ProductInWarehouse>()

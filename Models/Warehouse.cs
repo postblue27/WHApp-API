@@ -11,10 +11,10 @@ namespace WHApp_API.Models
         public string City { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
+        public double Cost { get; set; }
         public int OwnerId { get; set; }
         public Owner Owner { get; set; }
         public ICollection<RenterWarehouse> RenterWarehouses { get; set; }
         public ICollection<ProductInWarehouse> ProductsInWarehouse { get; set; }
-        public ICollection<Zone> Zones { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace WHApp_API.Data
         }
         public async Task<bool> ProductInWarehouseExists(int piwId)
         {
-            if(await _context.ProductsInWarehouse.AnyAsync(piw => piw.ProductInWarehouseId == piwId))
+            if(await _context.ProductsInWarehouse.AnyAsync(piw => piw.Id == piwId))
                 return true;
             return false;
         }

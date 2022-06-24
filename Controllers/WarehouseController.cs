@@ -44,6 +44,16 @@ namespace WHApp_API.Controllers
 
             return Ok(warehouses); 
         }
+
+        [HttpGet("get-renter-warehouses/{renterId}")]
+        public async Task<IActionResult> GetRenterWarehouses(int renterId)
+        {
+            var warehouses = await _warehouserepo.GetRenterWarehouses(renterId);
+            if(warehouses == null)
+                return BadRequest("Renter has no rented warehouses yet");
+
+            return Ok(warehouses); 
+        }
         
         [HttpGet("{warehouseId}")]
         public async Task<IActionResult> GetWarehouse(int warehouseId)
@@ -98,15 +108,15 @@ namespace WHApp_API.Controllers
             }
             return BadRequest("Problem adding zones to warehouse with id " + warehouse.Id);
         }
-        [HttpGet("get-zones")]
-        public async Task<IActionResult> GetWarehouseZones([FromHeader]int warehouseId)
-        {
-            var warehouse = await _warehouserepo.GetWarehouseWithZones(warehouseId);
+        // [HttpGet("get-zones")]
+        // public async Task<IActionResult> GetWarehouseZones([FromHeader]int warehouseId)
+        // {
+        //     var warehouse = await _warehouserepo.GetWarehouse(warehouseId);
 
-            if(warehouse == null)
-                return BadRequest("No zones for warehouse by this Id");
-            return Ok(warehouse.Zones);
-        }
+        //     if(warehouse == null)
+        //         return BadRequest("No zones for warehouse by this Id");
+        //     return Ok(warehouse.Zones);
+        // }
         [HttpDelete("delete-warehouse/{id}")]
         public async Task<IActionResult> DeleteWarehouse(int id)
         {

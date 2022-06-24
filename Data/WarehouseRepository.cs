@@ -29,6 +29,11 @@ namespace WHApp_API.Data
             return renterWarehouse;
         }
 
+        public async Task<List<RenterWarehouse>> GetRenterWarehouses(int renterId)
+        {
+            return await _context.RenterWarehouses.Where(rw => rw.Id == renterId).Include(rw => rw.Renter).Include(rw => rw.Warehouse).ToListAsync();
+        }
+
         public async Task<Warehouse> GetWarehouse(int warehouseId)
         {
             var warehouse = await _context.Warehouses.FirstOrDefaultAsync(w => w.Id == warehouseId);
@@ -43,12 +48,12 @@ namespace WHApp_API.Data
             return warehousesList;
         }
 
-        public async Task<Warehouse> GetWarehouseWithZones(int warehouseId)
-        {
-            var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.Id == warehouseId);
+        // public async Task<Warehouse> GetWarehouseWithZones(int warehouseId)
+        // {
+        //     var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.Id == warehouseId);
                 
-            return warehouse;
-        }
+        //     return warehouse;
+        // }
 
         public async Task<bool> WarehouseExists(int id)
         {
@@ -56,15 +61,15 @@ namespace WHApp_API.Data
                 return true;
             return false;
         }
-        public async Task<bool> ZoneExists(int warehouseId, int zoneId)
-        {
-            var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.Id == warehouseId);
-            foreach(Zone z in warehouse.Zones)
-            {
-                if(z.ZoneId == zoneId)
-                    return true;
-            }
-            return false;
-        }
+        // public async Task<bool> ZoneExists(int warehouseId, int zoneId)
+        // {
+        //     var warehouse = await _context.Warehouses.Include(w => w.Zones).FirstOrDefaultAsync(w => w.Id == warehouseId);
+        //     foreach(Zone z in warehouse.Zones)
+        //     {
+        //         if(z.ZoneId == zoneId)
+        //             return true;
+        //     }
+        //     return false;
+        // }
     }
 }

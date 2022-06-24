@@ -49,22 +49,16 @@ namespace WHApp_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RenterId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Volume")
+                    b.Property<int>("RenterId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -97,7 +91,7 @@ namespace WHApp_API.Migrations
 
             modelBuilder.Entity("WHApp_API.Models.ProductInWarehouse", b =>
                 {
-                    b.Property<int>("ProductInWarehouseId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -108,10 +102,10 @@ namespace WHApp_API.Migrations
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ZoneId")
+                    b.Property<int?>("ZoneId")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductInWarehouseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductId")
                         .IsUnique();
@@ -217,6 +211,9 @@ namespace WHApp_API.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Cost")
+                        .HasColumnType("float");
+
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
@@ -305,7 +302,9 @@ namespace WHApp_API.Migrations
                 {
                     b.HasOne("WHApp_API.Models.Renter", "Renter")
                         .WithMany("Products")
-                        .HasForeignKey("RenterId");
+                        .HasForeignKey("RenterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Renter");
                 });
@@ -332,20 +331,16 @@ namespace WHApp_API.Migrations
                     b.HasOne("WHApp_API.Models.Warehouse", "Warehouse")
                         .WithMany("ProductsInWarehouse")
                         .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WHApp_API.Models.Zone", "Zone")
-                        .WithMany("ProductsInWarehouse")
-                        .HasForeignKey("ZoneId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("WHApp_API.Models.Zone", null)
+                        .WithMany("ProductsInWarehouse")
+                        .HasForeignKey("ZoneId");
 
                     b.Navigation("Product");
 
                     b.Navigation("Warehouse");
-
-                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.ProductShipping", b =>
@@ -359,7 +354,7 @@ namespace WHApp_API.Migrations
                     b.HasOne("WHApp_API.Models.Product", "Product")
                         .WithOne("ProductShipping")
                         .HasForeignKey("WHApp_API.Models.ProductShipping", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Car");
@@ -398,7 +393,7 @@ namespace WHApp_API.Migrations
             modelBuilder.Entity("WHApp_API.Models.Zone", b =>
                 {
                     b.HasOne("WHApp_API.Models.Warehouse", "Warehouse")
-                        .WithMany("Zones")
+                        .WithMany()
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -428,8 +423,6 @@ namespace WHApp_API.Migrations
                     b.Navigation("ProductsInWarehouse");
 
                     b.Navigation("RenterWarehouses");
-
-                    b.Navigation("Zones");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Zone", b =>

@@ -51,12 +51,10 @@ namespace WHApp_API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Volume = table.Column<int>(type: "int", nullable: false),
-                    RenterId = table.Column<int>(type: "int", nullable: true)
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    RenterId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,7 +64,7 @@ namespace WHApp_API.Migrations
                         column: x => x.RenterId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,6 +79,7 @@ namespace WHApp_API.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Latitude = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Longitude = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Cost = table.Column<double>(type: "float", nullable: false),
                     OwnerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -117,8 +116,7 @@ namespace WHApp_API.Migrations
                         name: "FK_ProductsForShipping_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -173,15 +171,15 @@ namespace WHApp_API.Migrations
                 name: "ProductsInWarehouse",
                 columns: table => new
                 {
-                    ProductInWarehouseId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WarehouseId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    ZoneId = table.Column<int>(type: "int", nullable: false)
+                    ZoneId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductsInWarehouse", x => x.ProductInWarehouseId);
+                    table.PrimaryKey("PK_ProductsInWarehouse", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProductsInWarehouse_Products_ProductId",
                         column: x => x.ProductId,
@@ -192,13 +190,13 @@ namespace WHApp_API.Migrations
                         name: "FK_ProductsInWarehouse_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
                         principalTable: "Warehouses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ProductsInWarehouse_Zones_ZoneId",
                         column: x => x.ZoneId,
                         principalTable: "Zones",
-                        principalColumn: "ZoneId");
+                        principalColumn: "ZoneId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -217,7 +215,7 @@ namespace WHApp_API.Migrations
                         name: "FK_ProductForShipping_ProductsInWarehouse_ProductInWarehouseId",
                         column: x => x.ProductInWarehouseId,
                         principalTable: "ProductsInWarehouse",
-                        principalColumn: "ProductInWarehouseId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
