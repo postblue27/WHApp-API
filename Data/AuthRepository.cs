@@ -113,7 +113,7 @@ namespace WHApp_API.Data
             }
         }
 
-        public async Task<User> GetUser(string username, string userType)
+        public async Task<User> GetUser(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(r => r.Username.ToLower() == username.ToLower());
 

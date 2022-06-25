@@ -24,14 +24,14 @@ namespace WHApp_API.Data
         public async Task<RenterWarehouse> GetRenterWarehouse(int renterId, int warehouseId)
         {
             var renterWarehouse = await _context.RenterWarehouses//.Include(rw => rw.Renter).Include(rw => rw.Warehouse)
-                .FirstOrDefaultAsync(rw => rw.Id == renterId && rw.WarehouseId == warehouseId);
+                .FirstOrDefaultAsync(rw => rw.RenterId == renterId && rw.WarehouseId == warehouseId);
 
             return renterWarehouse;
         }
 
         public async Task<List<RenterWarehouse>> GetRenterWarehouses(int renterId)
         {
-            return await _context.RenterWarehouses.Where(rw => rw.Id == renterId).Include(rw => rw.Renter).Include(rw => rw.Warehouse).ToListAsync();
+            return await _context.RenterWarehouses.Where(rw => rw.RenterId == renterId).Include(rw => rw.Renter).Include(rw => rw.Warehouse).ToListAsync();
         }
 
         public async Task<Warehouse> GetWarehouse(int warehouseId)

@@ -54,19 +54,19 @@ namespace WHApp_API.Controllers
 
             return Ok(cars); 
         }
-        [HttpPost("add-to-shipping-list")]
-        public async Task<IActionResult> AddProductToShippingList(ProductForShipping productForShipping)
-        {
-            if(!await _productrepo.ProductInWarehouseExists(productForShipping.ProductInWarehouseId))
-                return BadRequest("No such record for product in warehouse");
+        // [HttpPost("add-to-shipping-list")]
+        // public async Task<IActionResult> AddProductToShippingList(ProductForShipping productForShipping)
+        // {
+        //     if(!await _productrepo.ProductInWarehouseExists(productForShipping.ProductInWarehouseId))
+        //         return BadRequest("No such record for product in warehouse");
             
-            _apprepo.Add(productForShipping);
+        //     _apprepo.Add(productForShipping);
 
-            if (await _apprepo.SaveAll()){
-                return Ok(productForShipping);
-            }
-            return BadRequest("Problem adding car");
-        }
+        //     if (await _apprepo.SaveAll()){
+        //         return Ok(productForShipping);
+        //     }
+        //     return BadRequest("Problem adding car");
+        // }
         // [HttpPost("add-to-shipping")]
         // public async Task<IActionResult> AddToShipping()
     }

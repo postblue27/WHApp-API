@@ -10,7 +10,7 @@ using WHApp_API.Data;
 namespace WHApp_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220624103257_Initial")]
+    [Migration("20220625023826_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,7 +54,16 @@ namespace WHApp_API.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Latitude")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitude")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductName")
@@ -63,86 +72,16 @@ namespace WHApp_API.Migrations
                     b.Property<int>("RenterId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RenterId");
 
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.ProductForShipping", b =>
-                {
-                    b.Property<int>("ProductForShippingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductInWarehouseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ShipmentDeadline")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProductForShippingId");
-
-                    b.HasIndex("ProductInWarehouseId")
-                        .IsUnique();
-
-                    b.ToTable("ProductForShipping");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.ProductInWarehouse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
-
                     b.HasIndex("WarehouseId");
 
-                    b.HasIndex("ZoneId");
-
-                    b.ToTable("ProductsInWarehouse");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.ProductShipping", b =>
-                {
-                    b.Property<int>("ProductShippingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CarId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Destination")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductShippingId");
-
-                    b.HasIndex("CarId");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
-
-                    b.ToTable("ProductsForShipping");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.RenterWarehouse", b =>
@@ -152,10 +91,7 @@ namespace WHApp_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("RenterId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RenterWarehouseId")
+                    b.Property<int>("RenterId")
                         .HasColumnType("int");
 
                     b.Property<int>("WarehouseId")
@@ -168,6 +104,38 @@ namespace WHApp_API.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("RenterWarehouses");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.ShippingRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShippingStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("ShippingRequests");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.User", b =>
@@ -238,29 +206,6 @@ namespace WHApp_API.Migrations
                     b.ToTable("Warehouses");
                 });
 
-            modelBuilder.Entity("WHApp_API.Models.Zone", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ZoneName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ZoneId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("Zones");
-                });
-
             modelBuilder.Entity("WHApp_API.Models.Admin", b =>
                 {
                     b.HasBaseType("WHApp_API.Models.User");
@@ -308,75 +253,58 @@ namespace WHApp_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Renter");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.ProductForShipping", b =>
-                {
-                    b.HasOne("WHApp_API.Models.ProductInWarehouse", "ProductInWarehouse")
-                        .WithOne("ProductForShipping")
-                        .HasForeignKey("WHApp_API.Models.ProductForShipping", "ProductInWarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductInWarehouse");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.ProductInWarehouse", b =>
-                {
-                    b.HasOne("WHApp_API.Models.Product", "Product")
-                        .WithOne("ProductInWarehouse")
-                        .HasForeignKey("WHApp_API.Models.ProductInWarehouse", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WHApp_API.Models.Warehouse", "Warehouse")
-                        .WithMany("ProductsInWarehouse")
+                        .WithMany("Products")
                         .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("WHApp_API.Models.Zone", null)
-                        .WithMany("ProductsInWarehouse")
-                        .HasForeignKey("ZoneId");
-
-                    b.Navigation("Product");
+                    b.Navigation("Renter");
 
                     b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.ProductShipping", b =>
-                {
-                    b.HasOne("WHApp_API.Models.Car", "Car")
-                        .WithMany("ProductsForShipping")
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WHApp_API.Models.Product", "Product")
-                        .WithOne("ProductShipping")
-                        .HasForeignKey("WHApp_API.Models.ProductShipping", "ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Car");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.RenterWarehouse", b =>
                 {
                     b.HasOne("WHApp_API.Models.Renter", "Renter")
                         .WithMany("RenterWarehouses")
-                        .HasForeignKey("RenterId");
+                        .HasForeignKey("RenterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WHApp_API.Models.Warehouse", "Warehouse")
                         .WithMany("RenterWarehouses")
                         .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Renter");
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("WHApp_API.Models.ShippingRequest", b =>
+                {
+                    b.HasOne("WHApp_API.Models.Car", "Car")
+                        .WithOne("ShippingRequest")
+                        .HasForeignKey("WHApp_API.Models.ShippingRequest", "CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WHApp_API.Models.Product", "Product")
+                        .WithOne("ShippingRequest")
+                        .HasForeignKey("WHApp_API.Models.ShippingRequest", "ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("WHApp_API.Models.Warehouse", "Warehouse")
+                        .WithMany("ShippingRequests")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Car");
+
+                    b.Navigation("Product");
 
                     b.Navigation("Warehouse");
                 });
@@ -392,44 +320,23 @@ namespace WHApp_API.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("WHApp_API.Models.Zone", b =>
-                {
-                    b.HasOne("WHApp_API.Models.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Warehouse");
-                });
-
             modelBuilder.Entity("WHApp_API.Models.Car", b =>
                 {
-                    b.Navigation("ProductsForShipping");
+                    b.Navigation("ShippingRequest");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Product", b =>
                 {
-                    b.Navigation("ProductInWarehouse");
-
-                    b.Navigation("ProductShipping");
-                });
-
-            modelBuilder.Entity("WHApp_API.Models.ProductInWarehouse", b =>
-                {
-                    b.Navigation("ProductForShipping");
+                    b.Navigation("ShippingRequest");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Warehouse", b =>
                 {
-                    b.Navigation("ProductsInWarehouse");
+                    b.Navigation("Products");
 
                     b.Navigation("RenterWarehouses");
-                });
 
-            modelBuilder.Entity("WHApp_API.Models.Zone", b =>
-                {
-                    b.Navigation("ProductsInWarehouse");
+                    b.Navigation("ShippingRequests");
                 });
 
             modelBuilder.Entity("WHApp_API.Models.Driver", b =>

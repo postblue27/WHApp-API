@@ -15,6 +15,7 @@ namespace WHApp_API.Models
         public int OwnerId { get; set; }
         public Owner Owner { get; set; }
         public ICollection<RenterWarehouse> RenterWarehouses { get; set; }
-        public ICollection<ProductInWarehouse> ProductsInWarehouse { get; set; }
+        public ICollection<Product> Products { get; set; }
+        public ICollection<ShippingRequest> ShippingRequests { get; set; }
     }
 }

@@ -27,49 +27,33 @@ namespace WHApp_API.Controllers
             _authrepo = authrepo;
         }
         [HttpPost("add-product")]
-        public async Task<IActionResult> AddProduct(ProductToAddDto productToAddDto)
+        public async Task<IActionResult> AddProduct(Product product)
         {
-            var warehouse = await _warehouserepo.GetWarehouse(productToAddDto.WarehouseId);
-            if(warehouse == null)
-                return BadRequest("No warehouse by this Id");
-            
-            // if(!await _warehouserepo.ZoneExists(warehouse.Id, productToAddDto.ZoneId))
-            //     return BadRequest("Provided zone does not exist in this warehouse");
-            //здесь добавить проверку на то, осталось ли достаточно места на складе. 
-            //Если да - вернуть зону, в котрую пометсить продукт
-
-
-            var user = await _authrepo.GetUser(productToAddDto.Username, UserTypes.Renter);
-
-            if(user == null)
-                return BadRequest("User does not exist");
-
-            var productToCreate = _mapper.Map<Product>(productToAddDto);
-            productToCreate.Id = user.Id;
-
-            _apprepo.Add(productToCreate);
-            if(!await _apprepo.SaveAll())
-            {
-                return BadRequest("Problem adding product");
-            }
-
-            ProductInWarehouse piw = new ProductInWarehouse(warehouse.Id, productToCreate.Id);
-            _apprepo.Add(piw);
+            _apprepo.Add(product);
             if(await _apprepo.SaveAll())
             {
-                return Ok(piw);
+                return Ok(product);
             }
             return BadRequest("Problem adding product");
         }
-        [HttpGet("get-products-in-warehouse")]
-        public async Task<IActionResult> GetProductsInWarehouse([FromHeader]int warehouseId)
+        [HttpGet("get-renter-products/{renterId}")]
+        public async Task<IActionResult> GetOwnerWarehouses(int renterId)
         {
-            var piwList = await _productrepo.GetProductsInWarehouse(warehouseId);
+            var products = _apprepo.Get<Product>(p => p.RenterId == renterId);
+            if(products == null)
+                return BadRequest("Renter has no products yet");
 
-            if(piwList == null)
-                return BadRequest("No products in this warehouse yet");
-
-            return Ok(piwList);
+            return Ok(products); 
         }
+        // [HttpGet("get-products-in-warehouse")]
+        // public async Task<IActionResult> GetProductsInWarehouse([FromHeader]int warehouseId)
+        // {
+        //     var piwList = await _productrepo.GetProductsInWarehouse(warehouseId);
+
+        //     if(piwList == null)
+        //         return BadRequest("No products in this warehouse yet");
+
+        //     return Ok(piwList);
+        // }
     }
 }

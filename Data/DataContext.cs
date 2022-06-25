@@ -13,11 +13,10 @@ namespace WHApp_API.Data
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<RenterWarehouse> RenterWarehouses { get; set; }
-        public DbSet<Zone> Zones { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductShipping> ProductsForShipping { get; set; }
-        public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
+        public DbSet<ShippingRequest> ShippingRequests { get; set; }
+        // public DbSet<ProductInWarehouse> ProductsInWarehouse { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
@@ -43,11 +42,21 @@ namespace WHApp_API.Data
             //     // .HasForeignKey(rw => rw.RenterId)
             //     .HasForeignKey(rw => rw.Id)
             //     .OnDelete(DeleteBehavior.Cascade);
-            // modelBuilder.Entity<Warehouse>()
-            //     .HasMany(w => w.RenterWarehouses)
-            //     .WithOne(rw => rw.Warehouse)
-            //     .HasForeignKey(rw => rw.WarehouseId)
-            //     .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Warehouse>()
+                .HasMany(w => w.RenterWarehouses)
+                .WithOne(rw => rw.Warehouse)
+                .HasForeignKey(rw => rw.WarehouseId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ShippingRequest>()
+                .HasOne(sr => sr.Product)
+                .WithOne(p => p.ShippingRequest)
+                .HasForeignKey<ShippingRequest>(sr => sr.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ShippingRequest>()
+                .HasOne(sr => sr.Warehouse)
+                .WithMany(w => w.ShippingRequests)
+                .HasForeignKey(sr => sr.WarehouseId)
+                .OnDelete(DeleteBehavior.NoAction);
             // modelBuilder.Entity<Driver>()
             //     .HasMany(d => d.Cars)
             //     .WithOne(c => c.Driver)
@@ -67,17 +76,18 @@ namespace WHApp_API.Data
             //     .WithOne(pfs => pfs.Car)
             //     .HasForeignKey(pfs => pfs.CarId)
             //     .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.ProductShipping)
-                .WithOne(pfs => pfs.Product)
-                .HasForeignKey<ProductShipping>(pfs => pfs.ProductId)
-                .OnDelete(DeleteBehavior.NoAction);
+            // modelBuilder.Entity<Product>()
+            //     .HasOne(p => p.ProductShipping)
+            //     .WithOne(pfs => pfs.Product)
+            //     .HasForeignKey<ProductShipping>(pfs => pfs.ProductId)
+            //     .OnDelete(DeleteBehavior.NoAction);
             
             // //warehouse and product relations
-            modelBuilder.Entity<Warehouse>()
-                .HasMany(w => w.ProductsInWarehouse)
-                .WithOne(piw => piw.Warehouse)
-                .HasForeignKey(piw => piw.WarehouseId)
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Warehouse)
+                .WithMany(w => w.Products)
+                // .HasForeignKey(p => p.WarehouseId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
             // modelBuilder.Entity<Product>()
             //     .HasOne(p => p.ProductInWarehouse)

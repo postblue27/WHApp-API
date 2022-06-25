@@ -22,17 +22,17 @@ namespace WHApp_API.Data
             return newProduct;
         }
 
-        public async Task<List<ProductInWarehouse>> GetProductsInWarehouse(int warehouseId)
-        {
-            var piwList = await _context.ProductsInWarehouse.Where(w => w.WarehouseId == warehouseId).ToListAsync();
+        // public async Task<List<ProductInWarehouse>> GetProductsInWarehouse(int warehouseId)
+        // {
+        //     var piwList = await _context.ProductsInWarehouse.Where(w => w.WarehouseId == warehouseId).ToListAsync();
             
-            return piwList;
-        }
-        public async Task<bool> ProductInWarehouseExists(int piwId)
-        {
-            if(await _context.ProductsInWarehouse.AnyAsync(piw => piw.Id == piwId))
-                return true;
-            return false;
-        }
+        //     return piwList;
+        // }
+        // public async Task<bool> ProductInWarehouseExists(int piwId)
+        // {
+        //     if(await _context.ProductsInWarehouse.AnyAsync(piw => piw.Id == piwId))
+        //         return true;
+        //     return false;
+        // }
     }
 }

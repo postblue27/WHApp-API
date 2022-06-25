@@ -9,6 +9,6 @@ namespace WHApp_API.Interfaces
         Task<User> RegisterAsync(UserForRegisterDto userForRegisterDto);
         Task<bool> UserExistsAsync(string username);
         Task<string> LoginAsync(string username, string userType, string password);
-        Task<User> GetUser(string username, string userType);
+        Task<User> GetUser(string username);
     }
 }
